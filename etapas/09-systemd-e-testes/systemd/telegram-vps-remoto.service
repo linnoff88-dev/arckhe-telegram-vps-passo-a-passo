@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram VPS remoto (bot -> Claude Code pela assinatura, com trava de OK)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/kits/telegram-vps-remoto
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 %h/kits/telegram-vps-remoto/bot.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=2G
+
+[Install]
+WantedBy=default.target

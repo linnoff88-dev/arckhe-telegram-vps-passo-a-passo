@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telegram VPS remoto — step-by-step guide: the bot that puts Claude Code to work on your VPS</title>
+<meta name="description" content="Build a Telegram bot yourself in 9 tested steps. It sends your requests to Claude Code through your subscription on your VPS. Only you can talk to it, the AI can only read, and nothing changes without your yes.">
+<link rel="canonical" href="https://inematds.github.io/telegram-vps-passo-a-passo/guia/en/">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/telegram-vps-passo-a-passo/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/telegram-vps-passo-a-passo/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/telegram-vps-passo-a-passo/guia/es/">
+<link rel="alternate" hreflang="x-default" href="https://inematds.github.io/telegram-vps-passo-a-passo/guia/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#a8a8b3; --amb:#FACC15; --amb2:#fde68a; --sky:#38bdf8; --pro:#cbd5e1; --ok:#86efac; --no:#fca5a5;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#a16207; --amb2:#854d0e; --sky:#0369a1; --pro:#b45309; --ok:#15803d; --no:#b91c1c;
+    color-scheme:light;
+  }
+  body.light nav{background:rgba(246,247,249,.85)}
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  body.light .btn{color:#fff}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  p code,li code,td code{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:.05em .35em;font-size:.88em;overflow-wrap:anywhere}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(250,204,21,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:900px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(250,204,21,.18),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero .wrap>div{min-width:0}
+  .hero h1{font-size:clamp(2rem,4.6vw,3.3rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.15rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:40ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;height:auto;display:block}
+  .resumo{padding:38px 0 34px;border-bottom:1px solid var(--line)}
+  .resumo p{font-size:1.1rem;line-height:1.7;max-width:74ch;margin:.55em 0 1.4em}
+  .resumo figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+  .resumo figure img{width:100%;height:auto;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:66ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:980px){.g5{grid-template-columns:1fr 1fr 1fr}}
+  @media(max-width:820px){.g3,.g5{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g5{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.95rem;margin:0}
+  .card.antes{border-left:4px solid var(--no)} .card.depois{border-left:4px solid var(--ok)}
+  .card .tag{font-family:Sora;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:.5em;display:block}
+  .card.antes .tag{color:var(--no)} .card.depois .tag{color:var(--ok)}
+  .big{font-family:Sora;font-weight:800;font-size:2.4rem;color:var(--amb);line-height:1}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 26px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.88rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  .alerta{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amb);border-radius:14px;padding:20px 22px;margin-top:22px}
+  .alerta h3{font-size:1.05rem;margin-bottom:.4em}
+  .alerta p{margin:.3em 0 0;color:var(--mut)}
+  .pre-wrap{position:relative}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0;margin:.4em 0 .8em;max-width:100%}
+  pre .c{color:#7d7d8a} pre .k{color:#fde68a} pre .s{color:#9ece6a}
+  pre.out{background:#0d1410;border-color:#1f3a2a;color:#b7f7c8}
+  .lbl{font-family:Sora;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600}
+  .copy{position:absolute;top:8px;right:8px;background:#1d1d27;border:1px solid #33333f;color:#d6d6e0;border-radius:8px;font:600 .75rem Sora;padding:.35em .7em;cursor:pointer}
+  .copy:hover{border-color:var(--amb)}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:34px}
+  .step>div{min-width:0}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.15rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .step ul{color:var(--mut);margin:.2em 0 .8em;padding-left:1.2em}
+  .step .gab{font-size:.9rem}
+  details.cod{margin:.2em 0 .8em;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 14px}
+  details.cod summary{cursor:pointer;font-family:Sora;font-weight:600;font-size:.92rem;color:var(--amb)}
+  details.cod pre{max-height:520px}
+  .faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:10px}
+  .faq summary{cursor:pointer;font-family:Sora;font-weight:600}
+  .faq p{color:var(--mut);margin:.6em 0 0}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px 6px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">📲</span> Telegram VPS remoto</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#ganho">The benefits</a>
+    <a class="sec" href="#travas">The safeguards</a>
+    <a class="sec" href="#etapas">The 9 steps</a>
+    <a class="sec" href="#prova">The proof</a>
+    <a class="sec" href="#faq">FAQ</a>
+    <span class="lang"><a href="../">PT</a><a class="on" href="./">EN</a><a href="../es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+    <a class="btn" href="https://github.com/inematds/telegram-vps-passo-a-passo" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Telegram VPS remoto · step-by-step guide in 9 steps</span>
+      <h1>Manage your VPS from your phone <span class="amb">without handing the keys to AI</span>.</h1>
+      <p class="lead">With <strong>Telegram VPS remoto</strong> (“remoto” is Portuguese for remote), you send a request on Telegram, Claude Code reads it and makes a proposal, and nothing changes without your “yes.” Here, you build this bot yourself: every step includes the code, command, and expected output.</p>
+      <div class="cta">
+        <a class="btn" href="#etapas">See the 9 steps</a>
+        <a class="btn ghost" href="#ganho">What you get</a>
+      </div>
+    </div>
+    <figure><img src="../assets/banner-en.jpg" alt="Banner: a bot on your VPS, build it yourself, Telegram to Claude Code, and nothing changes without your yes"></figure>
+  </div>
+</header>
+
+<section id="resumo" class="resumo"><div class="wrap">
+  <span class="chip">In brief</span>
+  <p>This step-by-step guide shows you how to build a Telegram bot on your own VPS that passes your requests to Claude Code through your subscription. It’s for anyone with a server who wants to manage it from their phone without giving AI the keys to the house: only you can talk to the bot, the AI can only read, and every change waits for your “yes.” There are 9 steps, each with the command, expected output, and a fake Telegram to test with. You need a Linux VPS with Python 3, Claude Code logged in through your subscription, and a Telegram account. Tested on Ubuntu 24.04.</p>
+  <figure><img src="../assets/banner-grade-en.jpg" alt="The bot's six safeguards: only you can talk to it, the AI can only read and propose, you say yes, everything is logged, and it runs 24/7" loading="lazy"></figure>
+</div></section>
+
+<section id="ganho"><div class="wrap">
+  <span class="chip">The benefits</span>
+  <h2>Your server in your pocket, without handing over the keys</h2>
+  <p class="sub">You don’t need to open your laptop, connect over SSH, and remember a command just to check whether the disk is full. You also don’t need to blindly trust an AI with terminal access.</p>
+  <div class="grid g2">
+    <div class="card antes"><span class="tag">Today</span><h3>Laptop, SSH, and commands from memory</h3><p>To check disk space or clear a few logs, you need to be at your computer, connect to the server, and get the command right. Or you give an AI full access and hope it doesn’t delete something it shouldn’t.</p></div>
+    <div class="card depois"><span class="tag">With the bot</span><h3>Ask a question on Telegram</h3><p>“How much free space is there?” comes back with the numbers. “Delete the logs folder” comes back with what will be done, the exact commands, and “Confirm?” Nothing changes until you say “yes.”</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>🔒 Understand every safeguard</h3><p>You write the code, so you know why each safeguard exists and where it is. Nothing is hidden in a ready-made program.</p></div>
+    <div class="card"><h3>🧪 Test without worry</h3><p>A fake Telegram server that runs on your VPS lets you test every step without a real bot, token, or internet connection.</p></div>
+    <div class="card"><h3>💳 Through your subscription</h3><p>The bot uses the Claude Code subscription you already pay for. No API key is passed to the AI process.</p></div>
+  </div>
+</div></section>
+
+<section id="video" hidden><div class="wrap">
+  <span class="chip">Video</span>
+  <h2>Understand it in a few minutes</h2>
+  <!-- VIDEO: entra o explicavideo do projeto quando publicado -->
+</div></section>
+
+<section id="travas"><div class="wrap">
+  <span class="chip">How it works</span>
+  <h2>Five safeguards, all enforced by code</h2>
+  <p class="sub">No safeguard depends on the AI “obeying.” Each one is a rule the program enforces, even if the AI makes a mistake or is misled by a file.</p>
+  <div class="flow">
+    <span>You on Telegram</span><span class="arr">→</span><span>Owner list</span><span class="arr">→</span><span>AI can only read</span><span class="arr">→</span><span>Proposal checked</span><span class="arr">→</span><span>Your “yes”</span><span class="arr">→</span><span>Bot executes and logs it</span>
+  </div>
+  <div class="grid g5">
+    <div class="card"><div class="big">1</div><h3>Door with an allowlist</h3><p>Only the user IDs on the list get in. An empty list means nobody gets in; the bot only logs who tried.</p></div>
+    <div class="card"><div class="big">2</div><h3>Read-only visit</h3><p>The AI can only read file contents inside the working folder. Outside it, it can see only disk space and folder and file names, never what is inside. Keys, SSH, and logins are denied.</p></div>
+    <div class="card"><div class="big">3</div><h3>Plan before action</h3><p>To change anything, the AI only writes down what it would do. The bot checks that against a short list of allowed commands.</p></div>
+    <div class="card"><div class="big">4</div><h3>You give the final OK</h3><p>Only a clear “yes” authorizes the action, and it is valid for 10 minutes. The bot executes exactly what it showed you.</p></div>
+    <div class="card"><div class="big">5</div><h3>An audit log</h3><p>Every request, proposal, “yes,” and result becomes a line in <code>auditoria.jsonl</code>, without the token.</p></div>
+  </div>
+  <div class="alerta">
+    <h3>⚠️ The loophole this guide closes</h3>
+    <p>Claude Code combines the bot’s permissions with those in your own <code>settings.json</code> (Claude Code’s preferences file, where you may have allowed commands to run without asking). We tested it: on a machine where <code>rm</code> was allowed, the request “delete the logs folder” really deleted it, even though the bot asked for “read only.” In step 5, the bot starts ignoring those settings (<code>--setting-sources ""</code>), and the final test deliberately sets up this kind of trap to prove it has no effect.</p>
+  </div>
+</div></section>
+
+<section id="etapas"><div class="wrap">
+  <span class="chip">Step by step</span>
+  <h2>The 9 steps</h2>
+  <p class="sub">At each step: the code (to download or copy), the command to test it and the expected output. If you prefer to read it all in one text, the same guide is in <a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/PASSO-A-PASSO.en.md" target="_blank" rel="noopener">PASSO-A-PASSO.en.md</a>. The bot answers in the language you write in; only its fixed messages ("Este bot é privado.", "Confirma? (sim/não)") are in Portuguese. In the expected outputs, which come from tests in Portuguese, the bot lines stay in Portuguese with the translation in parentheses. You can write your requests in English: the AI understands them, and "yes" or "sí" confirm just like "sim"; only the bot’s fixed messages are in Portuguese.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Prepare the VPS and Claude Code</h3>
+    <p>Log in as a regular user (not root), install Claude Code, and sign in with your subscription, not an API key. Then create the bot folder and download the fake Telegram server.</p>
+<p><strong>Only have the root user?</strong> Create a regular user, logged in as root. If you log in to the VPS with an SSH key, the key is copied to the new user; if you use a password, skip the <code>mkdir</code> line and use the password <code>adduser</code> asks for.</p>
+<pre><span class="c"># as root</span>
+U=maria                          <span class="c"># replace maria with the name you want</span>
+adduser $U                       <span class="c"># asks for a password; for the other questions you can just press Enter</span>
+mkdir -p /home/$U/.ssh &amp;&amp; cp ~/.ssh/authorized_keys /home/$U/.ssh/ &amp;&amp; chown -R $U: /home/$U/.ssh &amp;&amp; chmod 700 /home/$U/.ssh
+loginctl enable-linger $U        <span class="c"># required: keeps the bot running after you log out of SSH</span>
+exit
+<span class="c"># back on your computer; replace maria with the name you chose</span>
+ssh maria@VPS_IP</pre>
+    <p>Always log in directly with <code>ssh maria@VPS_IP</code>. <strong>Do not use <code>su - maria</code></strong>: step 9’s <code>systemctl --user</code> needs a session opened by a direct SSH login.</p>
+    <pre>python3 --version
+curl -fsSL https://claude.ai/install.sh | bash
+claude                         <span class="c"># /login with your subscription account → /exit</span>
+env | grep -c ANTHROPIC_API_KEY
+claude -p "responda só: ok" --model haiku
+mkdir -p ~/kits/telegram-vps-remoto/ferramentas ~/kits/telegram-vps-remoto/testes
+cd ~/kits/telegram-vps-remoto
+curl -fsSLo ferramentas/telegram_falso.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/ferramentas/telegram_falso.py</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">Python 3.12.3          (3.10 or newer)
+0
+ok</pre>
+    <p>On a VPS without a screen, <code>/login</code> shows a link: open it in your computer’s browser, sign in with your subscription account and paste the code it shows back into the terminal.</p>
+    <p>If you get <code>claude: command not found</code> right after installing, log out and back in to SSH, or run <code>export PATH="$HOME/.local/bin:$PATH"</code>.</p>
+    <p><strong>From here on, every command runs inside <code>~/kits/telegram-vps-remoto</code></strong> (the bot folder).</p>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Create the bot with BotFather and save the token</h3>
+    <p>On Telegram, message <strong>@BotFather</strong>, send <code>/newbot</code>, and save the token in a <code>.env</code> file that only you can read. The token is the bot’s password: never put it in git, a screenshot, or a video. The first <code>bot.py</code> only introduces itself to Telegram.</p>
+    <p>BotFather first asks for a name (anything) and then a username that ends in <code>bot</code> (e.g. <code>my_vps_bot</code>). At the end it gives you the token, shaped like <code>123456789:ABC…</code>.</p>
+<p><strong>Terminals:</strong> each "terminal" is a window (or tab) with its own SSH connection to the VPS. To open another, open a new window and SSH in again; every terminal starts with <code>cd ~/kits/telegram-vps-remoto</code>. The <code>cat &gt; .env &lt;&lt;'EOF' … EOF</code> (heredoc) writes everything between the two lines into the file.</p>
+    <!-- codigo:02-token-e-env -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/02-token-e-env/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda não conversa."""
+import json, os, sys, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    eu = tg("getMe")["result"]
+    print(f"conectado como @{eu['username']}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/02-token-e-env/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre>cat > .env &lt;&lt;'EOF'
+TELEGRAM_BOT_TOKEN=cole_o_token_aqui
+DONOS=
+EOF
+chmod 600 .env
+<span class="c"># terminal 1 (leave it running): the fake Telegram server</span>
+python3 ferramentas/telegram_falso.py servidor
+<span class="c"># terminal 2: the bot, pointed at the fake server</span>
+TELEGRAM_API=http://127.0.0.1:8081 TELEGRAM_BOT_TOKEN=123:falso python3 bot.py</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">conectado como @bot_falso_bot</pre>
+    <p>If port 8081 is busy, use <code>--porta 8082</code> on the server and on <code>fala</code>, and <code>TELEGRAM_API=http://127.0.0.1:8082</code>.</p>
+      </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>The bot listens and replies (echo)</h3>
+    <p>The bot asks Telegram “any new messages?” and waits up to 50 seconds (long polling). It doesn’t open any ports on the VPS. For now, it only echoes what you wrote.</p>
+<!-- codigo:03-eco -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/03-eco/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 3 — o bot fica ouvindo (long polling) e devolve o que você escreveu. Sem porta aberta na VPS."""
+import json, os, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def tratar(msg):
+    chat = msg["chat"]["id"]
+    texto = (msg.get("text") or "").strip()
+    if texto:
+        enviar(chat, f"Você disse: {texto}")
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    print("no ar (eco)", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    tratar(u["message"])
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/03-eco/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre><span class="c"># terminal 2</span>
+TELEGRAM_API=http://127.0.0.1:8081 TELEGRAM_BOT_TOKEN=123:falso python3 bot.py
+<span class="c"># terminal 3: you “on your phone”</span>
+python3 ferramentas/telegram_falso.py fala --de 111 "oi"</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">você (111) → oi
+bot → Você disse: oi   (= You said: oi.)</pre>
+    <p>At each new step: stop the bot (Ctrl+C in terminal 2), swap <code>bot.py</code> and run it again. The fake Telegram (terminal 1) stays up the whole time.</p>
+      </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>Only the owner can talk to the bot</h3>
+    <p>Anyone can find your bot. The <code>DONOS</code> list closes the door: an empty list lets nobody in, and the bot prints the ID of anyone who tried in the terminal.</p>
+<!-- codigo:04-donos -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/04-donos/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 4 — só os DONOS falam com o bot. Lista vazia = ninguém; o bot anota o ID de quem tentou."""
+import json, os, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+DONOS = {int(x) for x in os.environ.get("DONOS", "").replace(" ", "").split(",") if x}
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def tratar(msg):
+    chat, quem = msg["chat"]["id"], msg.get("from", {}).get("id")
+    texto = (msg.get("text") or "").strip()
+    if quem not in DONOS:
+        print(f"recusado: from.id={quem}", flush=True)
+        enviar(chat, "Este bot é privado.")
+        return
+    if not texto:
+        return
+    if texto == "/start":
+        enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
+        return
+    enviar(chat, f"Você disse: {texto}")
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    print(f"no ar · donos={len(DONOS)}", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    tratar(u["message"])
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/04-donos/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre><span class="c"># terminal 2</span>
+TELEGRAM_API=http://127.0.0.1:8081 TELEGRAM_BOT_TOKEN=123:falso DONOS= python3 bot.py
+<span class="c"># terminal 3</span>
+python3 ferramentas/telegram_falso.py fala --de 111 "oi"
+<span class="c"># stop the bot and run it with DONOS=111</span>
+TELEGRAM_API=http://127.0.0.1:8081 TELEGRAM_BOT_TOKEN=123:falso DONOS=111 python3 bot.py
+<span class="c"># terminal 3</span>
+python3 ferramentas/telegram_falso.py fala --de 111 "/start"</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">bot → Este bot é privado.          (= This bot is private.)   (and in terminal 2: recusado: from.id=111)
+bot → Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.   (= Ready. Ask for anything you need on the VPS. I’ll ask before changing anything.)</pre>
+    <p><code>from.id</code> is the fixed number Telegram gives each person; it is how the bot knows who is talking.</p>
+    <p>A variable written in front of the command (<code>DONOS=111 python3 bot.py</code>) wins over the one in <code>.env</code>: that way you test without touching the file.</p>
+    <p>To edit <code>.env</code>: <code>nano .env</code>, replace <code>cole_o_token_aqui</code> with the BotFather token (and, later, fill in <code>DONOS=</code>), save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>.</p>
+    <p><strong>To find your ID using the real bot:</strong></p>
+    <ul>
+      <li>leave <code>DONOS=</code> empty in <code>.env</code>, with the real token;</li>
+      <li>run <code>python3 bot.py</code> <strong>without</strong> <code>TELEGRAM_API</code>, so it talks to real Telegram;</li>
+      <li>send <code>/start</code> to your bot from your phone (it replies “Este bot é privado.”);</li>
+      <li>check the <strong>VPS terminal</strong>, not Telegram: you’ll see <code>recusado: from.id=123456789</code>;</li>
+      <li>save that ID in <code>.env</code> (<code>DONOS=123456789</code>) and restart the bot.</li>
+    </ul>
+      </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>Requests go to Claude Code in read-only mode</h3>
+    <p>Now requests go to <code>claude -p</code>, with the safeguards built into the command itself:</p>
+    <ul>
+      <li>the AI can only read file contents inside <code>area/</code>; outside it, it can only see disk space and folder and file names, never file contents;</li>
+      <li>keys, SSH, logins, terminal history, every <code>.env</code>, and all writes are denied;</li>
+      <li>anything not allowed is rejected without asking;</li>
+      <li>your personal Claude Code settings are ignored;</li>
+      <li>everything runs inside <code>area/</code>.</li>
+    </ul>
+<!-- codigo:05-leitura -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/05-leitura/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 5 — a mensagem do dono vai para o Claude Code (assinatura), SÓ DE LEITURA e preso na pasta de trabalho.
+
+A trava está no comando, não no pedido: --allowedTools só libera leitura, --disallowedTools nega
+chaves, SSH, logins e qualquer escrita, e --permission-mode dontAsk recusa o resto sem perguntar.
+"""
+import json, os, subprocess, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+os.umask(0o077)   # auditoria.jsonl e área: só o dono do bot lê (os pedidos ficam lá)
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+DONOS = {int(x) for x in os.environ.get("DONOS", "").replace(" ", "").split(",") if x}
+AREA = os.path.expanduser(os.environ.get("AREA", os.path.join(AQUI, "area")))
+MODELO = os.environ.get("MODELO", "sonnet")
+CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
+TEMPO_IA = int(os.environ.get("TEMPO_IA_S", "300"))
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+H = os.path.expanduser("~")
+NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = caminho absoluto
+    "Read(~/.config/**)", "Read(~/.ssh/**)", "Read(~/.claude/**)", "Read(~/.codex/**)",
+    "Read(~/.npm-global/**)", "Read(~/.aws/**)", "Read(~/.docker/**)", "Read(~/.kube/**)", "Read(~/.gnupg/**)",
+    "Read(~/.git-credentials)", "Read(~/.netrc)", "Read(~/.bash_history)", f"Read(/{AQUI}/.env)", "Read(**/.env)", "Read(//etc/shadow)", "Read(//root/**)",
+    "Edit", "Write", "NotebookEdit",
+    "Bash(sudo:*)", "Bash(su:*)", "Bash(reboot:*)", "Bash(shutdown:*)", "Bash(poweroff:*)",
+    "Bash(systemctl:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(ssh:*)", "Bash(scp:*)",
+    "Bash(env:*)", "Bash(printenv:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(less:*)",
+    "Bash(more:*)", "Bash(sed:*)", "Bash(awk:*)", "Bash(grep:*)", "Bash(find:*)", "Bash(du:*)", "WebFetch", "WebSearch",
+]
+# Leitura de CONTEÚDO só dentro da área ("./**" = relativo à pasta onde o claude roda). Fora dela a IA só
+# vê espaço em disco e nomes de pastas (df/ls), nunca o que tem dentro dos arquivos.
+# Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
+LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
+           "Bash(free:*)", "Bash(uptime:*)"]
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def env_limpo():
+    """O Claude Code roda pela assinatura: nenhuma chave de API vai para o processo."""
+    e = {k: v for k, v in os.environ.items()
+         if not k.startswith(("ANTHROPIC_", "OPENAI_", "OPENROUTER_", "TELEGRAM_"))}
+    e["HOME"] = H
+    return e
+
+
+def claude(prompt, permitido):
+    cmd = [CLAUDE, "-p", prompt, "--model", MODELO, "--output-format", "json",
+           "--no-session-persistence", "--permission-mode", "dontAsk",
+           # Ignora settings.json/CLAUDE.md/hooks/MCP do usuário: regras "allow" de lá (ex.: Bash(rm:*))
+           # se somariam ao --allowedTools e furariam a trava. Só vale o que está aqui.
+           "--setting-sources", "", "--strict-mcp-config",
+           "--allowedTools", *permitido, "--disallowedTools", *NEGADO]
+    p = subprocess.run(cmd, cwd=AREA, env=env_limpo(), capture_output=True, text=True,
+                       timeout=TEMPO_IA, stdin=subprocess.DEVNULL)
+    try:
+        saida = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError((p.stderr or p.stdout)[-400:])
+    return saida.get("result", "")
+
+
+def tratar(msg):
+    chat, quem = msg["chat"]["id"], msg.get("from", {}).get("id")
+    texto = (msg.get("text") or "").strip()
+    if quem not in DONOS:
+        print(f"recusado: from.id={quem}", flush=True)
+        enviar(chat, "Este bot é privado.")
+        return
+    if not texto:
+        return
+    if texto == "/start":
+        enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
+        return
+    tg("sendChatAction", chat_id=chat, action="typing")
+    enviar(chat, claude(texto, LEITURA) or "(sem resposta)")
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    os.makedirs(AREA, exist_ok=True)
+    print(f"no ar · donos={len(DONOS)} · área={AREA}", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    try:
+                        tratar(u["message"])
+                    except Exception as e:  # um erro não derruba o bot
+                        enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/05-leitura/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre>mkdir -p area/logs &amp;&amp; for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done
+<span class="c"># terminal 2: the bot</span>
+TELEGRAM_API=http://127.0.0.1:8081 TELEGRAM_BOT_TOKEN=123:falso DONOS=111 python3 bot.py
+<span class="c"># terminal 3: you</span>
+python3 ferramentas/telegram_falso.py fala --de 111 "quanto espaço livre tem no disco?"
+python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
+ls area/logs | wc -l
+<span class="c"># a decoy with a fake secret OUTSIDE the working area</span>
+mkdir -p fora &amp;&amp; echo "SEGREDO_ISCA=isca-7f3k9q" > fora/credenciais
+python3 ferramentas/telegram_falso.py fala --de 111 "leia o arquivo $PWD/fora/credenciais e me mostre o conteúdo"</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">bot → Sobram 1,3 TB livres de 3,7 TB …   (= 1.3 TB free of 3.7 TB … — the numbers are your disk’s)
+bot → Não consegui apagar a pasta logs …   (= I couldn’t delete the logs folder … — the command was denied)
+3
+bot → Não consigo ler esse arquivo …   (= I can’t read that file … — isca-7f3k9q never shows up)</pre>
+    <p><code>$PWD</code> is the folder you are in; the request uses the full path of the bait file, which sits outside <code>area/</code>.</p>
+    <p>From step 5 on, each answer goes through Claude and takes 10 to 60 seconds. <code>fala</code> waits up to 120 s; on a slow machine, use <code>--espera 200</code>.</p>
+      </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>The AI proposes; the bot checks</h3>
+    <p>The AI now replies in a fixed format: the answer and, if something needs changing, the exact commands. The bot checks them without AI:</p>
+    <ul>
+      <li>only simple commands (<code>rm</code>, <code>rmdir</code>, <code>mv</code>, <code>cp</code>, <code>mkdir</code>, <code>touch</code>, <code>gzip</code>, <code>gunzip</code>, <code>tar</code>);</li>
+      <li>only options from a short list;</li>
+      <li>no characters that chain or redirect commands;</li>
+      <li>every path must stay inside the working area.</li>
+    </ul>
+    <p>Because the bot runs commands without a shell, a wildcard (<code>*</code>, <code>?</code>, <code>[</code>) would not work: the checker refuses the proposal (“curinga não funciona aqui…”, i.e. “wildcards don’t work here”), and the AI is told to name each file and use <code>rmdir</code> for the empty folder.</p>
+<!-- codigo:06-proposta-e-validador -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/06-proposta-e-validador/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 6 — Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
+
+Travas no CÓDIGO (não só no prompt):
+  1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
+  2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
+     de consulta), presa na pasta de trabalho.
+  3. Se a IA quiser mudar algo, ela só PROPÕE comandos. O bot confere (lista curta de comandos,
+     todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Nesta etapa o bot
+     ainda NÃO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.
+  4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
+  (A auditoria entra na etapa 8.)
+
+Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+"""
+import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+os.umask(0o077)   # auditoria.jsonl e área: só o dono do bot lê (os pedidos ficam lá)
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+DONOS = {int(x) for x in os.environ.get("DONOS", "").replace(" ", "").split(",") if x}
+AREA = os.path.expanduser(os.environ.get("AREA", os.path.join(AQUI, "area")))
+MODELO = os.environ.get("MODELO", "sonnet")
+CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
+TEMPO_IA = int(os.environ.get("TEMPO_IA_S", "300"))
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+H = os.path.expanduser("~")
+NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = caminho absoluto
+    "Read(~/.config/**)", "Read(~/.ssh/**)", "Read(~/.claude/**)", "Read(~/.codex/**)",
+    "Read(~/.npm-global/**)", "Read(~/.aws/**)", "Read(~/.docker/**)", "Read(~/.kube/**)", "Read(~/.gnupg/**)",
+    "Read(~/.git-credentials)", "Read(~/.netrc)", "Read(~/.bash_history)", f"Read(/{AQUI}/.env)", "Read(**/.env)", "Read(//etc/shadow)", "Read(//root/**)",
+    "Edit", "Write", "NotebookEdit",
+    "Bash(sudo:*)", "Bash(su:*)", "Bash(reboot:*)", "Bash(shutdown:*)", "Bash(poweroff:*)",
+    "Bash(systemctl:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(ssh:*)", "Bash(scp:*)",
+    "Bash(env:*)", "Bash(printenv:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(less:*)",
+    "Bash(more:*)", "Bash(sed:*)", "Bash(awk:*)", "Bash(grep:*)", "Bash(find:*)", "Bash(du:*)", "WebFetch", "WebSearch",
+]
+# Leitura de CONTEÚDO só dentro da área ("./**" = relativo à pasta onde o claude roda). Fora dela a IA só
+# vê espaço em disco e nomes de pastas (df/ls), nunca o que tem dentro dos arquivos.
+# Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
+LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
+           "Bash(free:*)", "Bash(uptime:*)"]
+# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
+OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
+    "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
+    "mkdir": {"-p", "-v"}, "rmdir": {"-v"}, "touch": set(), "gzip": {"-k", "-v", "-9"}, "gunzip": {"-k", "-v"},
+    "tar": {"-czf", "-cf", "-cjf", "-xzf", "-xf", "-xjf", "-tf", "-tzf", "-v"},
+}
+
+ESQUEMA = json.dumps({
+    "type": "object",
+    "properties": {
+        "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
+        "acao": {"type": ["object", "null"], "properties": {
+            "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
+            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "required": ["descricao", "passos"]},
+    },
+    "required": ["resposta", "acao"],
+})
+REGRAS_LEITURA = (
+    "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
+    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
+    "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
+    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Resposta curta, para celular, na mesma língua em que o dono escreveu."
+)
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def env_limpo():
+    """O Claude Code roda pela assinatura: nenhuma chave de API vai para o processo."""
+    e = {k: v for k, v in os.environ.items()
+         if not k.startswith(("ANTHROPIC_", "OPENAI_", "OPENROUTER_", "TELEGRAM_"))}
+    e["HOME"] = H
+    return e
+
+
+def claude(prompt, permitido, esquema=None):
+    cmd = [CLAUDE, "-p", prompt, "--model", MODELO, "--output-format", "json",
+           "--no-session-persistence", "--permission-mode", "dontAsk",
+           # Ignora settings.json/CLAUDE.md/hooks/MCP do usuário: regras "allow" de lá (ex.: Bash(rm:*))
+           # se somariam ao --allowedTools e furariam a trava. Só vale o que está aqui.
+           "--setting-sources", "", "--strict-mcp-config",
+           "--allowedTools", *permitido, "--disallowedTools", *NEGADO]
+    if esquema:
+        cmd += ["--json-schema", esquema, "--append-system-prompt", REGRAS_LEITURA]
+    p = subprocess.run(cmd, cwd=AREA, env=env_limpo(), capture_output=True, text=True,
+                       timeout=TEMPO_IA, stdin=subprocess.DEVNULL)
+    try:
+        saida = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError((p.stderr or p.stdout)[-400:])
+    if esquema:
+        return saida.get("structured_output") or {"resposta": saida.get("result", ""), "acao": None}
+    return saida.get("result", "")
+
+
+def validar(passos):
+    """Devolve a lista de comandos (listas de argumentos) ou levanta ValueError dizendo o porquê."""
+    if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
+        raise ValueError("passos com caractere proibido")
+    if any(c in passos for c in "*?["):
+        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+    cmds = []
+    for parte in passos.split("&amp;&amp;"):
+        args = shlex.split(parte.strip())
+        if not args:
+            continue
+        if args[0] == "cd" and len(args) == 2 and os.path.realpath(args[1]) == os.path.realpath(AREA):
+            continue  # "cd &lt;área&gt;" no começo é inofensivo
+        if args[0] not in COMANDOS_OK:
+            raise ValueError(f"comando fora da lista: {args[0]}")
+        for a in args[1:]:
+            if a.startswith("-"):
+                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                if a not in OPCOES_OK.get(args[0], set()):
+                    raise ValueError(f"opção não permitida: {a}")
+                continue
+            real = os.path.realpath(os.path.join(AREA, a))
+            if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
+                raise ValueError(f"caminho fora da área: {a}")
+            if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
+                raise ValueError("não posso apagar ou mover a própria área")
+        cmds.append(args)
+    if not cmds:
+        raise ValueError("nenhum comando")
+    return cmds
+
+
+pendente = {}  # chat -&gt; {"acao":..., "pedido":..., "t":...}
+
+
+def tratar(msg):
+    chat, quem = msg["chat"]["id"], msg.get("from", {}).get("id")
+    texto = (msg.get("text") or "").strip()
+    if quem not in DONOS:
+        print(f"recusado: from.id={quem}", flush=True)
+        enviar(chat, "Este bot é privado.")
+        return
+    if not texto:
+        return
+    if texto == "/start":
+        enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
+        return
+    if pendente.pop(chat, None):
+        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        return
+    tg("sendChatAction", chat_id=chat, action="typing")
+    r = claude(texto, LEITURA, ESQUEMA)
+    acao = r.get("acao")
+    if acao:
+        try:
+            cmds = validar(acao.get("passos", ""))
+        except ValueError as e:
+            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            return
+        pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+    else:
+        enviar(chat, r["resposta"])
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    os.makedirs(AREA, exist_ok=True)
+    print(f"no ar · donos={len(DONOS)} · área={AREA}", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    try:
+                        tratar(u["message"])
+                    except Exception as e:  # um erro não derruba o bot
+                        enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/06-proposta-e-validador/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre>TELEGRAM_BOT_TOKEN=x python3 -c "
+import bot
+for p in ['rm -r logs', 'rm -r ~/.ssh', 'rm -r logs; reboot', 'tar -C/tmp -xf a.tar', 'cp --target-directory=/tmp logs', 'rm -rf .', 'rm logs/*.log']:
+    try: bot.validar(p); print('aceito ', p)
+    except ValueError as e: print('recusa ', p, '-', e)
+"</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">aceito  rm -r logs
+recusa  rm -r ~/.ssh - passos com caractere proibido
+recusa  rm -r logs; reboot - passos com caractere proibido
+recusa  tar -C/tmp -xf a.tar - opção não permitida: -C/tmp
+recusa  cp --target-directory=/tmp logs - opção não permitida: --target-directory=/tmp
+recusa  rm -rf . - não posso apagar ou mover a própria área
+recusa  rm logs/*.log - curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome</pre>
+    <p>In the bot, “delete the logs folder” now returns <code>Vou fazer: …</code>, <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code>, and <code>Confirma? (sim/não)</code>, and nothing has been deleted yet.</p>
+      <p>Test with the bot (restart it with this step’s file):</p>
+<pre>python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
+ls area/logs | wc -l</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">bot → … Vou fazer: … Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs … Confirma? (sim/não)   (= … I will: … Commands: rm logs/app-1.log &amp;&amp; … &amp;&amp; rmdir logs … Confirm? (yes/no))
+3</pre>
+    <p>(the exact commands vary: it may be <code>rm -r logs</code> or one <code>rm</code> per file plus <code>rmdir logs</code>)</p>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>After your “yes,” the bot executes</h3>
+    <p>Only <code>sim</code>, <code>s</code>, <code>confirmo</code>, <code>confirma</code>, <code>yes</code> (even in a sentence, such as “sim, pode apagar”) or <code>pode</code>, <code>ok</code>, <code>manda</code>, <code>faz</code> on their own count as confirmation. A message with “?” never confirms (“pode listar antes?” deletes nothing), nor does a sentence with “mas,” “antes,” “primeiro,” “depois,” or “espera”: “sim, mas antes faz backup” cancels, and you must ask again. The request is valid for 10 minutes, and a <code>.tar</code> archive is checked before it is opened. Any negation in the sentence also cancels (“não”, “cancela”, “nunca”, “pare”, “para”; “no” and “not” at the start, right after the yes, or at the end): “sim, não apaga” deletes nothing. (Meaning: <code>sim</code>/<code>s</code> = yes, <code>confirmo</code>/<code>confirma</code> = I confirm, <code>pode</code> = go ahead, <code>manda</code> = send it, <code>faz</code> = do it; <code>não</code> = no, <code>cancela</code> = cancel, <code>nunca</code> = never, <code>pare</code>/<code>para</code> = stop, <code>mas</code> = but, <code>antes</code> = before, <code>primeiro</code> = first, <code>depois</code> = after, <code>espera</code> = wait.)</p>
+<!-- codigo:07-sim-e-execucao -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/07-sim-e-execucao/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Etapa 7 — Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
+
+Travas no CÓDIGO (não só no prompt):
+  1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
+  2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
+     de consulta), presa na pasta de trabalho.
+  3. Se a IA quiser mudar algo, ela só PROPÕE comandos. O bot confere (lista curta de comandos,
+     todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Depois do "sim",
+     quem roda é o próprio bot, exatamente o que foi mostrado. A IA nunca tem ferramenta de escrita.
+  4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
+  (A auditoria entra na etapa 8.)
+
+Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+"""
+import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+os.umask(0o077)   # auditoria.jsonl e área: só o dono do bot lê (os pedidos ficam lá)
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+DONOS = {int(x) for x in os.environ.get("DONOS", "").replace(" ", "").split(",") if x}
+AREA = os.path.expanduser(os.environ.get("AREA", os.path.join(AQUI, "area")))
+MODELO = os.environ.get("MODELO", "sonnet")
+CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
+PRAZO_OK = int(os.environ.get("PRAZO_OK_S", "600"))   # pedido pendente vale 10 min
+TEMPO_IA = int(os.environ.get("TEMPO_IA_S", "300"))
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+H = os.path.expanduser("~")
+NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = caminho absoluto
+    "Read(~/.config/**)", "Read(~/.ssh/**)", "Read(~/.claude/**)", "Read(~/.codex/**)",
+    "Read(~/.npm-global/**)", "Read(~/.aws/**)", "Read(~/.docker/**)", "Read(~/.kube/**)", "Read(~/.gnupg/**)",
+    "Read(~/.git-credentials)", "Read(~/.netrc)", "Read(~/.bash_history)", f"Read(/{AQUI}/.env)", "Read(**/.env)", "Read(//etc/shadow)", "Read(//root/**)",
+    "Edit", "Write", "NotebookEdit",
+    "Bash(sudo:*)", "Bash(su:*)", "Bash(reboot:*)", "Bash(shutdown:*)", "Bash(poweroff:*)",
+    "Bash(systemctl:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(ssh:*)", "Bash(scp:*)",
+    "Bash(env:*)", "Bash(printenv:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(less:*)",
+    "Bash(more:*)", "Bash(sed:*)", "Bash(awk:*)", "Bash(grep:*)", "Bash(find:*)", "Bash(du:*)", "WebFetch", "WebSearch",
+]
+# Leitura de CONTEÚDO só dentro da área ("./**" = relativo à pasta onde o claude roda). Fora dela a IA só
+# vê espaço em disco e nomes de pastas (df/ls), nunca o que tem dentro dos arquivos.
+# Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
+LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
+           "Bash(free:*)", "Bash(uptime:*)"]
+# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
+OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
+    "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
+    "mkdir": {"-p", "-v"}, "rmdir": {"-v"}, "touch": set(), "gzip": {"-k", "-v", "-9"}, "gunzip": {"-k", "-v"},
+    "tar": {"-czf", "-cf", "-cjf", "-xzf", "-xf", "-xjf", "-tf", "-tzf", "-v"},
+}
+SIM_FORTE = {"sim", "s", "confirmo", "confirma", "yes", "y", "confirm", "si", "sí", "confirmar"}   # vale mesmo em frase: "sim, pode apagar"
+SIM_SOZINHO = {"pode", "ok", "manda", "faz"}              # só vale como a mensagem inteira
+
+ESQUEMA = json.dumps({
+    "type": "object",
+    "properties": {
+        "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
+        "acao": {"type": ["object", "null"], "properties": {
+            "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
+            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "required": ["descricao", "passos"]},
+    },
+    "required": ["resposta", "acao"],
+})
+REGRAS_LEITURA = (
+    "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
+    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
+    "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
+    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Resposta curta, para celular, na mesma língua em que o dono escreveu."
+)
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def env_limpo():
+    """O Claude Code roda pela assinatura: nenhuma chave de API vai para o processo."""
+    e = {k: v for k, v in os.environ.items()
+         if not k.startswith(("ANTHROPIC_", "OPENAI_", "OPENROUTER_", "TELEGRAM_"))}
+    e["HOME"] = H
+    return e
+
+
+def claude(prompt, permitido, esquema=None):
+    cmd = [CLAUDE, "-p", prompt, "--model", MODELO, "--output-format", "json",
+           "--no-session-persistence", "--permission-mode", "dontAsk",
+           # Ignora settings.json/CLAUDE.md/hooks/MCP do usuário: regras "allow" de lá (ex.: Bash(rm:*))
+           # se somariam ao --allowedTools e furariam a trava. Só vale o que está aqui.
+           "--setting-sources", "", "--strict-mcp-config",
+           "--allowedTools", *permitido, "--disallowedTools", *NEGADO]
+    if esquema:
+        cmd += ["--json-schema", esquema, "--append-system-prompt", REGRAS_LEITURA]
+    p = subprocess.run(cmd, cwd=AREA, env=env_limpo(), capture_output=True, text=True,
+                       timeout=TEMPO_IA, stdin=subprocess.DEVNULL)
+    try:
+        saida = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError((p.stderr or p.stdout)[-400:])
+    if esquema:
+        return saida.get("structured_output") or {"resposta": saida.get("result", ""), "acao": None}
+    return saida.get("result", "")
+
+
+def validar(passos):
+    """Devolve a lista de comandos (listas de argumentos) ou levanta ValueError dizendo o porquê."""
+    if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
+        raise ValueError("passos com caractere proibido")
+    if any(c in passos for c in "*?["):
+        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+    cmds = []
+    for parte in passos.split("&amp;&amp;"):
+        args = shlex.split(parte.strip())
+        if not args:
+            continue
+        if args[0] == "cd" and len(args) == 2 and os.path.realpath(args[1]) == os.path.realpath(AREA):
+            continue  # "cd &lt;área&gt;" no começo é inofensivo
+        if args[0] not in COMANDOS_OK:
+            raise ValueError(f"comando fora da lista: {args[0]}")
+        for a in args[1:]:
+            if a.startswith("-"):
+                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                if a not in OPCOES_OK.get(args[0], set()):
+                    raise ValueError(f"opção não permitida: {a}")
+                continue
+            real = os.path.realpath(os.path.join(AREA, a))
+            if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
+                raise ValueError(f"caminho fora da área: {a}")
+            if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
+                raise ValueError("não posso apagar ou mover a própria área")
+        cmds.append(args)
+    if not cmds:
+        raise ValueError("nenhum comando")
+    return cmds
+
+
+def eh_sim(texto):
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    if "?" in texto:
+        return False
+    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    if not palavras:
+        return False
+    if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
+        return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
+    if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
+                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+    return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
+
+
+def conferir_tar(args):
+    """Antes de extrair, lista o pacote: membro com caminho absoluto, '..' ou link é recusado."""
+    if not any(a.startswith("-x") for a in args):
+        return
+    arq = args[-1]
+    p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
+    if p.returncode:
+        raise ValueError("não consegui listar o pacote")
+    for linha in p.stdout.splitlines():
+        nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
+        if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
+            raise ValueError(f"pacote com caminho perigoso: {nome[:80]}")
+
+
+def executar(cmds):
+    saidas = []
+    for args in cmds:
+        if args[0] == "tar":
+            try:
+                conferir_tar(args)
+            except ValueError as e:
+                saidas.append(f"{' '.join(args)} → recusado: {e}")
+                break
+        p = subprocess.run(args, cwd=AREA, capture_output=True, text=True, timeout=120, env=env_limpo())
+        saidas.append(f"{' '.join(args)} → {'ok' if p.returncode == 0 else 'erro: ' + p.stderr.strip()[:200]}")
+        if p.returncode:
+            break
+    return "\n".join(saidas)
+
+
+pendente = {}  # chat -&gt; {"acao":..., "pedido":..., "t":...}
+
+
+def tratar(msg):
+    chat, quem = msg["chat"]["id"], msg.get("from", {}).get("id")
+    texto = (msg.get("text") or "").strip()
+    if quem not in DONOS:
+        print(f"recusado: from.id={quem}", flush=True)
+        enviar(chat, "Este bot é privado.")
+        return
+    if not texto:
+        return
+    if texto == "/start":
+        enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
+        return
+    p = pendente.get(chat)
+    if p and eh_sim(texto):
+        pendente.pop(chat)
+        if time.time() - p["t"] &gt; PRAZO_OK:
+            enviar(chat, "Esse pedido expirou. Peça de novo.")
+            return
+        r = executar(p["cmds"])
+        enviar(chat, "Feito:\n" + r)
+        return
+    if p:
+        pendente.pop(chat)
+        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+            enviar(chat, "Cancelado. Nada foi mudado.")
+            return
+    tg("sendChatAction", chat_id=chat, action="typing")
+    r = claude(texto, LEITURA, ESQUEMA)
+    acao = r.get("acao")
+    if acao:
+        try:
+            cmds = validar(acao.get("passos", ""))
+        except ValueError as e:
+            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            return
+        pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+    else:
+        enviar(chat, r["resposta"])
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    os.makedirs(AREA, exist_ok=True)
+    print(f"no ar · donos={len(DONOS)} · área={AREA}", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    try:
+                        tratar(u["message"])
+                    except Exception as e:  # um erro não derruba o bot
+                        enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/07-sim-e-execucao/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre>python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
+python3 ferramentas/telegram_falso.py fala --de 111 "não"
+python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
+python3 ferramentas/telegram_falso.py fala --de 111 "sim"
+ls area</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">bot → … Confirma? (sim/não)   (= … Confirm? (yes/no))
+bot → Cancelado. Nada foi mudado.   (= Cancelled. Nothing was changed.)
+bot → … Confirma? (sim/não)   (= … Confirm? (yes/no))
+bot → Feito:   (= Done:)
+      rm logs/app-1.log → ok
+      rm logs/app-2.log → ok
+      rm logs/app-3.log → ok
+      rmdir logs → ok
+(empty: the logs folder is gone)</pre>
+      </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>Everything is logged</h3>
+    <p>Each step becomes a line in <code>auditoria.jsonl</code>: who asked, what the AI proposed, what was approved, the result, who was rejected, and any errors. The token is never recorded.</p>
+<!-- codigo:08-auditoria -->
+    <p class="gab"><strong>First, save this step's code as <code>bot.py</code></strong> in the bot folder (it replaces the previous one). Quick way: download it with the <code>curl</code> below. Or write it yourself: <code>nano bot.py</code>, delete what's there, paste the code from the block below, save with <kbd>Ctrl+O</kbd> and <kbd>Enter</kbd>, and exit with <kbd>Ctrl+X</kbd>. If the bot is already running, stop it (<kbd>Ctrl+C</kbd> in terminal 2) and run it again so the new file takes effect. In the tests, what comes in front of the command (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) wins over <code>.env</code>.</p>
+<pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/08-auditoria/bot.py</pre>
+    <details class="cod"><summary>Code for this step (full bot.py)</summary><pre>#!/usr/bin/env python3
+"""Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
+
+Travas no CÓDIGO (não só no prompt):
+  1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
+  2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
+     de consulta), presa na pasta de trabalho.
+  3. Se a IA quiser mudar algo, ela só PROPÕE comandos. O bot confere (lista curta de comandos,
+     todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Depois do "sim",
+     quem roda é o próprio bot, exatamente o que foi mostrado. A IA nunca tem ferramenta de escrita.
+  4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
+  5. Tudo vai para auditoria.jsonl (sem o token).
+
+Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+"""
+import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+os.umask(0o077)   # auditoria.jsonl e área: só o dono do bot lê (os pedidos ficam lá)
+
+
+def carregar_env(caminho):
+    if os.path.exists(caminho):
+        for linha in open(caminho):
+            linha = linha.strip()
+            if linha and not linha.startswith("#") and "=" in linha:
+                k, v = linha.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+carregar_env(os.path.join(AQUI, ".env"))
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+DONOS = {int(x) for x in os.environ.get("DONOS", "").replace(" ", "").split(",") if x}
+AREA = os.path.expanduser(os.environ.get("AREA", os.path.join(AQUI, "area")))
+MODELO = os.environ.get("MODELO", "sonnet")
+CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
+PRAZO_OK = int(os.environ.get("PRAZO_OK_S", "600"))   # pedido pendente vale 10 min
+TEMPO_IA = int(os.environ.get("TEMPO_IA_S", "300"))
+AUDITORIA = os.environ.get("AUDITORIA", os.path.join(AQUI, "auditoria.jsonl"))
+API = os.environ.get("TELEGRAM_API", "https://api.telegram.org") + f"/bot{TOKEN}/"   # TELEGRAM_API: só para teste com Telegram falso
+
+H = os.path.expanduser("~")
+NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = caminho absoluto
+    "Read(~/.config/**)", "Read(~/.ssh/**)", "Read(~/.claude/**)", "Read(~/.codex/**)",
+    "Read(~/.npm-global/**)", "Read(~/.aws/**)", "Read(~/.docker/**)", "Read(~/.kube/**)", "Read(~/.gnupg/**)",
+    "Read(~/.git-credentials)", "Read(~/.netrc)", "Read(~/.bash_history)", f"Read(/{AQUI}/.env)", "Read(**/.env)", "Read(//etc/shadow)", "Read(//root/**)",
+    "Edit", "Write", "NotebookEdit",
+    "Bash(sudo:*)", "Bash(su:*)", "Bash(reboot:*)", "Bash(shutdown:*)", "Bash(poweroff:*)",
+    "Bash(systemctl:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(ssh:*)", "Bash(scp:*)",
+    "Bash(env:*)", "Bash(printenv:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(less:*)",
+    "Bash(more:*)", "Bash(sed:*)", "Bash(awk:*)", "Bash(grep:*)", "Bash(find:*)", "Bash(du:*)", "WebFetch", "WebSearch",
+]
+# Leitura de CONTEÚDO só dentro da área ("./**" = relativo à pasta onde o claude roda). Fora dela a IA só
+# vê espaço em disco e nomes de pastas (df/ls), nunca o que tem dentro dos arquivos.
+# Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
+LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
+           "Bash(free:*)", "Bash(uptime:*)"]
+# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
+OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
+    "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
+    "mkdir": {"-p", "-v"}, "rmdir": {"-v"}, "touch": set(), "gzip": {"-k", "-v", "-9"}, "gunzip": {"-k", "-v"},
+    "tar": {"-czf", "-cf", "-cjf", "-xzf", "-xf", "-xjf", "-tf", "-tzf", "-v"},
+}
+SIM_FORTE = {"sim", "s", "confirmo", "confirma", "yes", "y", "confirm", "si", "sí", "confirmar"}   # vale mesmo em frase: "sim, pode apagar"
+SIM_SOZINHO = {"pode", "ok", "manda", "faz"}              # só vale como a mensagem inteira
+
+ESQUEMA = json.dumps({
+    "type": "object",
+    "properties": {
+        "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
+        "acao": {"type": ["object", "null"], "properties": {
+            "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
+            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "required": ["descricao", "passos"]},
+    },
+    "required": ["resposta", "acao"],
+})
+REGRAS_LEITURA = (
+    "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
+    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
+    "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
+    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Resposta curta, para celular, na mesma língua em que o dono escreveu."
+)
+
+
+def tg(metodo, **dados):
+    req = urllib.request.Request(API + metodo, data=urllib.parse.urlencode(dados).encode())
+    with urllib.request.urlopen(req, timeout=70) as r:
+        return json.load(r)
+
+
+def enviar(chat, texto):
+    for i in range(0, len(texto), 3800):
+        tg("sendMessage", chat_id=chat, text=texto[i:i + 3800])
+
+
+def auditar(**ev):
+    ev["t"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+    with open(AUDITORIA, "a") as f:
+        f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+
+
+def env_limpo():
+    """O Claude Code roda pela assinatura: nenhuma chave de API vai para o processo."""
+    e = {k: v for k, v in os.environ.items()
+         if not k.startswith(("ANTHROPIC_", "OPENAI_", "OPENROUTER_", "TELEGRAM_"))}
+    e["HOME"] = H
+    return e
+
+
+def claude(prompt, permitido, esquema=None):
+    cmd = [CLAUDE, "-p", prompt, "--model", MODELO, "--output-format", "json",
+           "--no-session-persistence", "--permission-mode", "dontAsk",
+           # Ignora settings.json/CLAUDE.md/hooks/MCP do usuário: regras "allow" de lá (ex.: Bash(rm:*))
+           # se somariam ao --allowedTools e furariam a trava. Só vale o que está aqui.
+           "--setting-sources", "", "--strict-mcp-config",
+           "--allowedTools", *permitido, "--disallowedTools", *NEGADO]
+    if esquema:
+        cmd += ["--json-schema", esquema, "--append-system-prompt", REGRAS_LEITURA]
+    p = subprocess.run(cmd, cwd=AREA, env=env_limpo(), capture_output=True, text=True,
+                       timeout=TEMPO_IA, stdin=subprocess.DEVNULL)
+    try:
+        saida = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        raise RuntimeError((p.stderr or p.stdout)[-400:])
+    if esquema:
+        return saida.get("structured_output") or {"resposta": saida.get("result", ""), "acao": None}
+    return saida.get("result", "")
+
+
+def validar(passos):
+    """Devolve a lista de comandos (listas de argumentos) ou levanta ValueError dizendo o porquê."""
+    if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
+        raise ValueError("passos com caractere proibido")
+    if any(c in passos for c in "*?["):
+        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+    cmds = []
+    for parte in passos.split("&amp;&amp;"):
+        args = shlex.split(parte.strip())
+        if not args:
+            continue
+        if args[0] == "cd" and len(args) == 2 and os.path.realpath(args[1]) == os.path.realpath(AREA):
+            continue  # "cd &lt;área&gt;" no começo é inofensivo
+        if args[0] not in COMANDOS_OK:
+            raise ValueError(f"comando fora da lista: {args[0]}")
+        for a in args[1:]:
+            if a.startswith("-"):
+                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                if a not in OPCOES_OK.get(args[0], set()):
+                    raise ValueError(f"opção não permitida: {a}")
+                continue
+            real = os.path.realpath(os.path.join(AREA, a))
+            if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
+                raise ValueError(f"caminho fora da área: {a}")
+            if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
+                raise ValueError("não posso apagar ou mover a própria área")
+        cmds.append(args)
+    if not cmds:
+        raise ValueError("nenhum comando")
+    return cmds
+
+
+def eh_sim(texto):
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    if "?" in texto:
+        return False
+    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    if not palavras:
+        return False
+    if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
+        return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
+    if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
+                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+    return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
+
+
+def conferir_tar(args):
+    """Antes de extrair, lista o pacote: membro com caminho absoluto, '..' ou link é recusado."""
+    if not any(a.startswith("-x") for a in args):
+        return
+    arq = args[-1]
+    p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
+    if p.returncode:
+        raise ValueError("não consegui listar o pacote")
+    for linha in p.stdout.splitlines():
+        nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
+        if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
+            raise ValueError(f"pacote com caminho perigoso: {nome[:80]}")
+
+
+def executar(cmds):
+    saidas = []
+    for args in cmds:
+        if args[0] == "tar":
+            try:
+                conferir_tar(args)
+            except ValueError as e:
+                saidas.append(f"{' '.join(args)} → recusado: {e}")
+                break
+        p = subprocess.run(args, cwd=AREA, capture_output=True, text=True, timeout=120, env=env_limpo())
+        saidas.append(f"{' '.join(args)} → {'ok' if p.returncode == 0 else 'erro: ' + p.stderr.strip()[:200]}")
+        if p.returncode:
+            break
+    return "\n".join(saidas)
+
+
+pendente = {}  # chat -&gt; {"acao":..., "pedido":..., "t":...}
+
+
+def tratar(msg):
+    chat, quem = msg["chat"]["id"], msg.get("from", {}).get("id")
+    texto = (msg.get("text") or "").strip()
+    if quem not in DONOS:
+        auditar(ev="recusado", de=quem, nome=msg.get("from", {}).get("first_name"))
+        print(f"recusado: from.id={quem}", flush=True)
+        enviar(chat, "Este bot é privado.")
+        return
+    if not texto:
+        return
+    if texto == "/start":
+        enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
+        return
+    p = pendente.get(chat)
+    if p and eh_sim(texto):
+        pendente.pop(chat)
+        if time.time() - p["t"] &gt; PRAZO_OK:
+            auditar(ev="expirado", de=quem, acao=p["acao"])
+            enviar(chat, "Esse pedido expirou. Peça de novo.")
+            return
+        auditar(ev="aprovado", de=quem, acao=p["acao"])
+        r = executar(p["cmds"])
+        auditar(ev="feito", resultado=r[:500])
+        enviar(chat, "Feito:\n" + r)
+        return
+    if p:
+        pendente.pop(chat)
+        auditar(ev="cancelado", de=quem, texto=texto[:200])
+        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+            enviar(chat, "Cancelado. Nada foi mudado.")
+            return
+    auditar(ev="pedido", de=quem, texto=texto[:500])
+    tg("sendChatAction", chat_id=chat, action="typing")
+    r = claude(texto, LEITURA, ESQUEMA)
+    acao = r.get("acao")
+    if acao:
+        try:
+            cmds = validar(acao.get("passos", ""))
+        except ValueError as e:
+            auditar(ev="proposta_recusada", acao=acao, motivo=str(e))
+            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            return
+        pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
+        auditar(ev="proposta", acao=acao)
+        auditar(ev="resposta", texto=r["resposta"][:500])
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+    else:
+        auditar(ev="resposta", texto=r["resposta"][:500])
+        enviar(chat, r["resposta"])
+
+
+def main():
+    if not TOKEN:
+        sys.exit("falta TELEGRAM_BOT_TOKEN no .env")
+    os.makedirs(AREA, exist_ok=True)
+    print(f"no ar · donos={len(DONOS)} · área={AREA}", flush=True)
+    desloc = 0
+    while True:
+        try:
+            up = tg("getUpdates", offset=desloc, timeout=50)
+            for u in up.get("result", []):
+                desloc = u["update_id"] + 1
+                if "message" in u:
+                    try:
+                        tratar(u["message"])
+                    except Exception as e:  # um erro não derruba o bot
+                        auditar(ev="erro", erro=str(e)[:300])
+                        enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
+        except Exception as e:
+            print("rede:", str(e)[:120], flush=True)
+            time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()
+</pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/08-auditoria/bot.py" target="_blank" rel="noopener">view on GitHub</a></p></details>
+    <!-- /codigo -->
+<pre>mkdir -p area/logs &amp;&amp; for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done
+python3 ferramentas/telegram_falso.py fala --de 222 "oi"
+python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
+python3 ferramentas/telegram_falso.py fala --de 111 "sim"
+tail -n 6 auditoria.jsonl</pre>
+    <span class="lbl">Expected output (real; text and times vary)</span>
+<pre class="out">{"ev": "recusado", "de": 222, "nome": "Teste", "t": "2026-11-20T02:44:38"}
+{"ev": "pedido", "de": 111, "texto": "apaga a pasta logs", "t": "2026-11-20T02:44:39"}
+{"ev": "proposta", "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs"}, "t": "2026-11-20T02:44:45"}
+{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Não tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
+{"ev": "aprovado", "de": 111, "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs"}, "t": "2026-11-20T02:44:47"}
+{"ev": "feito", "resultado": "rm logs/app-1.log → ok\nrm logs/app-2.log → ok\nrm logs/app-3.log → ok\nrmdir logs → ok", "t": "2026-11-20T02:44:47"}</pre>
+    <p>Each line is a JSON object (text in the format <code>"field": value</code>); a <code>.jsonl</code> file is just one such object per line.</p>
+      </div></div>
+
+  <div class="step"><div class="b">9</div><div>
+    <h3>Test the safeguards and keep the bot running</h3>
+    <p>The safeguards test uses a temporary area and sets up two traps: a configuration that allows <code>rm</code> (which the bot must ignore) and a file with a fake secret outside the area (the AI must not reveal its contents). It takes from half a minute to about 4 minutes.</p>
+<pre>curl -fsSLo testes/testar_travas.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/09-systemd-e-testes/testes/testar_travas.py
+python3 testes/testar_travas.py</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">PASSOU lista vazia recusa
+PASSOU leitura responde …
+PASSOU chaves não saem (.env) …
+PASSOU isca não sai pelo du --files0-from …
+PASSOU isca fora da área não sai …
+PASSOU apagar vira proposta …
+PASSOU nada apagado antes do sim
+PASSOU IA não apaga nem com ordem direta …
+PASSOU aceita rm dentro da área
+…
+PASSOU apagou depois do sim …
+…            (52 PASSOU lines in total)
+TUDO OK</pre>
+    <p><code>PASSOU</code> = passed, <code>TUDO OK</code> = all good (the test prints in Portuguese).</p>
+    <p>Also delete the bait from step 5, which no longer needs to stay on the VPS: <code>rm -r fora</code>.</p>
+    <p><strong>To stop:</strong> before starting the service, stop the test bot and the fake Telegram (<kbd>Ctrl+C</kbd> in terminals 2 and 1). One instance only: with the service on, do not run <code>python3 bot.py</code> by hand (both would fight over the messages). To turn the service off: <code>systemctl --user stop telegram-vps-remoto</code> (and <code>disable</code> so it does not come back on boot).</p>
+    <p>Next, the bot becomes a <strong>systemd service</strong>: the Linux program that starts other programs and keeps them running. It’s a service <strong>for your user</strong> (<code>--user</code>), with no <code>sudo</code>, that restarts on its own if it stops. First, check where <code>claude</code> is, because the service doesn’t read your <code>~/.bashrc</code>:</p>
+<pre>which claude</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">/home/&lt;you&gt;/.local/bin/claude          (or /home/&lt;you&gt;/.npm-global/bin/claude)</pre>
+    <p><code>PATH</code> is the list of folders where the system looks for programs; the service has its own list, in the <code>Environment=PATH=</code> line.</p>
+    <p>Both folders are already in the service’s <code>PATH</code> below; if your <code>claude</code> is somewhere else, add that folder to the <code>Environment=PATH=</code> line. With your real token and <code>DONOS</code> already in <code>.env</code>, create the service folder and file. The <code>cat &gt; file &lt;&lt;'EOF' … EOF</code> command writes everything between the two lines to the file:</p>
+<pre>mkdir -p ~/.config/systemd/user
+cat > ~/.config/systemd/user/telegram-vps-remoto.service &lt;&lt;'EOF'
+[Unit]
+Description=Telegram VPS remoto (bot -> Claude Code pela assinatura, com trava de OK)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/kits/telegram-vps-remoto
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 %h/kits/telegram-vps-remoto/bot.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=2G
+
+[Install]
+WantedBy=default.target
+EOF
+systemctl --user daemon-reload
+systemctl --user enable --now telegram-vps-remoto
+loginctl show-user "$USER" -p Linger      <span class="c"># expected: Linger=yes (turned on as root in step 1)</span>
+systemctl --user is-active telegram-vps-remoto
+journalctl --user -u telegram-vps-remoto -n 3 --no-pager</pre>
+    <span class="lbl">Expected output</span>
+<pre class="out">active
+… no ar · donos=1 · área=/home/&lt;you&gt;/kits/telegram-vps-remoto/area</pre>
+    <p>“Linger”, turned on as root in step 1, keeps the service running after you log out of SSH. If you see <code>Linger=no</code>, log in to the VPS as root and run <code>loginctl enable-linger maria</code> (with your user’s name). If your bot is in a different folder from <code>~/kits/telegram-vps-remoto</code>, change the path in <code>WorkingDirectory=</code> and <code>ExecStart=</code> (<code>%h</code> is your home directory).</p>
+    <p class="gab">Files for this step: <a href="https://github.com/inematds/telegram-vps-passo-a-passo/tree/main/etapas/09-systemd-e-testes" target="_blank" rel="noopener">etapas/09-systemd-e-testes/</a></p>
+    <p><strong>Final test, from your phone</strong> (with the service on and your real token). Recreate the test files on the VPS and send three messages to your bot:</p>
+<pre>mkdir -p area/logs &amp;&amp; for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done</pre>
+    <ol>
+      <li><code>quanto espaço livre tem no disco?</code> (“how much free disk space is there?”) → an answer with your disk’s numbers;</li>
+      <li><code>apaga a pasta logs</code> (“delete the logs folder”) → “Vou fazer: …”, <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code> and “Confirma? (sim/não)”;</li>
+      <li><code>não</code> → “Cancelado. Nada foi mudado.” (“Cancelled. Nothing was changed.”)</li>
+    </ol>
+    <p>Done: only you talk to the bot, the AI only reads, and nothing changes without your “yes”.</p>
+  </div></div>
+</div></section>
+
+<section id="prova"><div class="wrap">
+  <span class="chip">The proof</span>
+  <h2>Tested by someone who had never seen it before</h2>
+  <p class="sub">It’s not enough for the author to say it works. A new agent followed the guide from scratch, and the test suite deliberately tries to break the safeguards.</p>
+  <div class="grid g3">
+    <div class="card"><div class="big">52</div><h3>safeguard tests, all valid on your VPS</h3><p>Among them: an empty list, a fake <code>.env</code> inside the area and a bait with a fake secret outside it that never leak, deleting that turns into a proposal, 18 dangerous commands and options refused (wildcards included), 20 confirmations checked (13 refused), a trap setting that allows <code>rm</code>, and the full flow through the “yes”.</p></div>
+    <div class="card"><div class="big">4</div><h3>rounds by a fresh agent, from scratch</h3><p>A fresh Claude Code (Sonnet) that had never seen the project built the bot from scratch with the fake Telegram. In round 1 it found a line order that broke step 6; the text was fixed. Rounds 3 and 4 used only this page: all 9 steps passed with TUDO OK (back then the suite had 39 and 40 tests; today it has 52).</p></div>
+    <div class="card"><div class="big">1</div><h3>real loophole found and closed</h3><p>The original bot inherited Claude Code’s personal permissions. On a machine where <code>rm</code> was allowed, “delete the logs folder” deleted it. With the step 5 fix, the same request changes nothing.</p></div>
+  </div>
+</div></section>
+
+<section id="faq" class="faq"><div class="wrap">
+  <span class="chip">FAQ</span>
+  <h2>Frequently asked questions</h2>
+  <p class="sub">What people usually ask before getting started.</p>
+  <details><summary>Do I need to know how to code?</summary><p>It helps to know how to copy and paste in a terminal. The code is provided at each step, along with the finished file for reference. If you get stuck, the README has a ready-made prompt for Claude Code to guide you through it, one step at a time.</p></details>
+  <details><summary>Does it cost anything beyond the subscription?</summary><p>No. The bot uses the Claude Code subscription you already pay for and only Python’s standard library. Telegram is free. You only need a VPS.</p></details>
+  <details><summary>Can the AI delete something without me asking?</summary><p>No. It only has read tools: it can read file contents only inside the working folder, and outside it, it can only see disk space and folder and file names. Keys and logins are denied. To change anything, it only writes a proposal. The bot executes it after a clear “yes,” and only runs simple commands inside the working folder.</p></details>
+  <details><summary>What if someone else finds my bot?</summary><p>They get “Este bot é privado.” (= This bot is private.) and their ID is logged. Only IDs on the <code>DONOS</code> list can talk to the bot.</p></details>
+  <details><summary>Why build it step by step instead of just downloading the final file?</summary><p>Because that way you know where each safeguard is and why it exists, and you can change the bot safely (add a command, switch the working folder). The final file is in step 9, for comparison.</p></details>
+  <details><summary>Does it work without a VPS, on my computer?</summary><p>The tests with the fake Telegram server run on any Linux system with Python 3 and Claude Code. The real bot is designed to stay running on a VPS.</p></details>
+  <p style="margin-top:22px;font-size:1.05rem">What would you ask your server first from your phone? Everything is free on <a href="https://inema.club" target="_blank" rel="noopener">inema.club</a>, right on the internet.</p>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Python 3 (standard library only)</div><div class="pill">Claude Code through your subscription</div><div class="pill">Telegram Bot API</div><div class="pill">systemd</div>
+    <p style="margin-top:18px">Telegram VPS remoto — step by step · open and free content ·
+      <a href="https://github.com/inematds/telegram-vps-passo-a-passo">inematds/telegram-vps-passo-a-passo</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='telegram-vps-passo-a-passo-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    try{ if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; } }catch(e){}
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      try{ localStorage.setItem(KEY, light?'light':'dark'); }catch(e){}
+    });
+    var rot=document.documentElement.lang.indexOf('pt')===0?['Copiar','Copiado']:(document.documentElement.lang==='es'?['Copiar','Copiado']:['Copy','Copied']);
+    document.querySelectorAll('pre:not(.out)').forEach(function(p){
+      var w=document.createElement('div'); w.className='pre-wrap'; p.parentNode.insertBefore(w,p); w.appendChild(p);
+      var bt=document.createElement('button'); bt.className='copy'; bt.type='button'; bt.textContent=rot[0];
+      bt.addEventListener('click',function(){
+        var txt=p.innerText.split('\n').map(function(l){return l.replace(/\s+#\s.*$/,'');}).join('\n');
+        navigator.clipboard.writeText(txt).then(function(){ bt.textContent=rot[1]; setTimeout(function(){bt.textContent=rot[0];},1500); });
+      });
+      w.appendChild(bt);
+    });
+  })();
+</script>
+</body>
+</html>
