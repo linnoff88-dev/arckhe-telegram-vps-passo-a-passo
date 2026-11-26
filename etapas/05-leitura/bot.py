@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Etapa 5 — a mensagem do dono vai para o Claude Code (assinatura), SÓ DE LEITURA e preso na pasta de trabalho.
 
-A trava está no comando, não no pedido: --allowedTools só libera leitura, --disallowedTools nega
+A trava está no comando, nêo no pedido: --allowedTools só libera leitura, --disallowedTools nega
 chaves, SSH, logins e qualquer escrita, e --permission-mode dontAsk recusa o resto sem perguntar.
 """
 import json, os, subprocess, sys, time, urllib.parse, urllib.request
@@ -110,7 +110,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)

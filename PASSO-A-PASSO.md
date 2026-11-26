@@ -1,6 +1,6 @@
 # Passo a passo — seu bot de Telegram que manda o Claude Code trabalhar na sua VPS
 
-Você vai montar, do zero e na sua VPS, um bot de Telegram que recebe seus pedidos ("quanto espaço livre tem no disco?", "apaga a pasta logs") e passa para o **Claude Code pela sua assinatura**. As travas ficam no **código**, não no pedido:
+Você vai montar, do zero e na sua VPS, um bot de Telegram que recebe seus pedidos ("quanto espaço livre tem no disco?", "apaga a pasta logs") e passa para o **Claude Code pela sua assinatura**. As travas ficam no **código**, nêo no pedido:
 
 1. só você fala com o bot (lista de donos; lista vazia = ninguém);
 2. a IA só **lê**, presa numa pasta de trabalho (`area/`), sem ver chaves, SSH nem logins;
@@ -8,12 +8,12 @@ Você vai montar, do zero e na sua VPS, um bot de Telegram que recebe seus pedid
 4. depois do seu "sim", quem roda é o **próprio bot**, exatamente o que foi mostrado;
 5. tudo fica anotado em `auditoria.jsonl`.
 
-São 9 etapas. Cada uma termina com um teste e a **saída esperada**. Dá para testar tudo sem bot real, com o **Telegram falso** (`ferramentas/telegram_falso.py`), e só no fim ligar o bot de verdade.
+Sêo 9 etapas. Cada uma termina com um teste e a **saída esperada**. Dá para testar tudo sem bot real, com o **Telegram falso** (`ferramentas/telegram_falso.py`), e só no fim ligar o bot de verdade.
 
 O arquivo completo de cada etapa (gabarito) está em `etapas/NN-nome/bot.py` no repositório
 `https://github.com/inematds/telegram-vps-passo-a-passo`.
 
-> Testado no Ubuntu 24.04. Só biblioteca padrão do Python 3. Nada de `pip install`. Nada de API paga: o Claude Code roda pela assinatura.
+> Testado no Ubuntu 24.04. Só biblioteca padrêo do Python 3. Nada de `pip install`. Nada de API paga: o Claude Code roda pela assinatura.
 
 ---
 
@@ -32,9 +32,9 @@ exit
 ssh maria@IP_DA_VPS
 ```
 
-Entre sempre direto com `ssh maria@IP_DA_VPS`. **Não use `su - maria`**: o `systemctl --user` da etapa 9 precisa de uma sessão aberta por login direto no SSH.
+Entre sempre direto com `ssh maria@IP_DA_VPS`. **Nêo use `su - maria`**: o `systemctl --user` da etapa 9 precisa de uma sessêo aberta por login direto no SSH.
 
-Entre na VPS com um **usuário comum** (não root). Confira o Python:
+Entre na VPS com um **usuário comum** (nêo root). Confira o Python:
 
 ```bash
 python3 --version
@@ -42,14 +42,14 @@ python3 --version
 
 Saída esperada: `Python 3.10` ou mais novo (ex.: `Python 3.12.3`).
 
-Instale o Claude Code (instalador oficial) e entre com a **sua assinatura** (Pro/Max), não com chave de API:
+Instale o Claude Code (instalador oficial) e entre com a **sua assinatura** (Pro/Max), nêo com chave de API:
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
 claude            # dentro dele: /login → escolha a conta da assinatura → depois /exit
 ```
 
-Use um Claude Code recente (testado na versão 2.1; o bot usa as opções `--json-schema`, `--setting-sources` e `--strict-mcp-config`). Confira que funciona sem chave de API:
+Use um Claude Code recente (testado na versêo 2.1; o bot usa as opções `--json-schema`, `--setting-sources` e `--strict-mcp-config`). Confira que funciona sem chave de API:
 
 ```bash
 env | grep -c ANTHROPIC_API_KEY          # esperado: 0  (se der 1, tire essa variável do seu ~/.bashrc)
@@ -73,7 +73,7 @@ python3 ferramentas/telegram_falso.py --help | head -3
 
 Saída esperada: começa com `usage: telegram_falso.py`.
 
-**Daqui em diante, todos os comandos são rodados dentro de `~/kits/telegram-vps-remoto`.**
+**Daqui em diante, todos os comandos sêo rodados dentro de `~/kits/telegram-vps-remoto`.**
 
 ---
 
@@ -98,7 +98,7 @@ Crie o `bot.py` desta etapa (ele só se apresenta ao Telegram). Jeito rápido: b
 
 ```python
 #!/usr/bin/env python3
-"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda não conversa."""
+"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda nêo conversa."""
 import json, os, sys, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -158,9 +158,9 @@ Saída esperada: `conectado como @bot_falso_bot`.
 
 ## Etapa 3 — O bot ouve e responde (eco)
 
-O bot pergunta ao Telegram "tem mensagem nova?" e fica esperando até 50 s (**long polling**). Não abre porta nenhuma na VPS.
+O bot pergunta ao Telegram "tem mensagem nova?" e fica esperando até 50 s (**long polling**). Nêo abre porta nenhuma na VPS.
 
-Acrescente ao `bot.py` (depois de `tg`), a função que responde e a que trata cada mensagem:
+Acrescente ao `bot.py` (depois de `tg`), a funçêo que responde e a que trata cada mensagem:
 
 ```python
 def enviar(chat, texto):
@@ -175,7 +175,7 @@ def tratar(msg):
         enviar(chat, f"Você disse: {texto}")
 ```
 
-Troque a função `main` por esta (o laço que ouve); o `if __name__ == "__main__": main()` do fim do arquivo continua igual. Acrescente `time` na linha do `import`:
+Troque a funçêo `main` por esta (o laço que ouve); o `if __name__ == "__main__": main()` do fim do arquivo continua igual. Acrescente `time` na linha do `import`:
 
 ```python
 import json, os, sys, time, urllib.parse, urllib.request
@@ -199,7 +199,7 @@ def main():
             time.sleep(5)
 ```
 
-`offset` = "já li até aqui": o Telegram não reenvia o que foi confirmado.
+`offset` = "já li até aqui": o Telegram nêo reenvia o que foi confirmado.
 
 **Teste** (terminal 1 continua com o servidor falso):
 
@@ -290,7 +290,7 @@ Para editar o `.env`: `nano .env`, troque `cole_o_token_aqui` pelo token do BotF
 1. No `.env`, deixe `DONOS=` vazio e ponha o token real em `TELEGRAM_BOT_TOKEN`.
 2. Na VPS, rode o bot **sem** `TELEGRAM_API` (assim ele fala com o Telegram de verdade): `python3 bot.py`.
 3. No celular, mande `/start` para o seu bot. Ele responde "Este bot é privado." — é o esperado.
-4. Olhe o **terminal da VPS** (não o Telegram): aparece `recusado: from.id=123456789`. Esse número é o seu.
+4. Olhe o **terminal da VPS** (nêo o Telegram): aparece `recusado: from.id=123456789`. Esse número é o seu.
 5. Pare o bot (Ctrl+C), grave no `.env`: `DONOS=123456789` (o seu número), e rode de novo: agora o `/start` responde "Pronto. …".
 
 Se aparecer mais de um número, só um é o seu: o que surgiu na hora em que você mandou o `/start`.
@@ -303,7 +303,7 @@ Agora o pedido do dono vai para o `claude -p`. A trava está **no comando**:
 
 - `--allowedTools` só libera leitura: `Read`, `Glob` e `Grep` **só dentro de `area/`** (`./**`), e `df`, `ls`, `free`, `uptime` (sem `du`: `du --files0-from=<arquivo>` mostraria o conteúdo do arquivo na mensagem de erro). Fora da área a IA só vê espaço em disco e nomes de pastas e arquivos, **nunca o conteúdo** dos arquivos;
 - `--disallowedTools` nega, mesmo assim, chaves e logins (`~/.config`, `~/.ssh`, `~/.claude`, `~/.codex`, `~/.aws`, `~/.docker`, `~/.kube`, `~/.gnupg`, `~/.git-credentials`, `~/.netrc`), o histórico do terminal, todo `.env`, e qualquer escrita (`Edit`, `Write`, `sudo`, `curl`), e os comandos que mostrariam conteúdo de arquivo (`cat`, `head`, `tail`, `less`, `more`, `sed`, `awk`, `grep`, `find`, `du`);
-- `--permission-mode dontAsk` recusa sozinho tudo o que não foi liberado;
+- `--permission-mode dontAsk` recusa sozinho tudo o que nêo foi liberado;
 - `--setting-sources ""` e `--strict-mcp-config` fazem o Claude **ignorar o seu `settings.json`** (o arquivo de preferências do Claude Code, onde você pode ter liberado comandos para rodar sem perguntar)**, CLAUDE.md, hooks e MCP**. Sem isso, uma regra "allow" sua (ex.: `Bash(rm:*)`) se soma às liberadas e **fura a trava** — testamos: sem essa linha, "apague a pasta logs" apagou;
 - roda dentro de `area/` e sem nenhuma chave de API no ambiente (assinatura).
 
@@ -328,7 +328,7 @@ CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
 TEMPO_IA = int(os.environ.get("TEMPO_IA_S", "300"))
 ```
 
-Depois da linha `API = ...`, as listas do que a IA pode e não pode usar. Confira a ordem: `AREA` tem de vir antes, porque a etapa 6 usa `AREA` dentro de um texto definido logo depois de `LEITURA`. O topo do arquivo fica nesta ordem: `AQUI` → `carregar_env` → `TOKEN` → `DONOS` → `AREA`, `MODELO`, `CLAUDE`, `TEMPO_IA` → `API` → `H`, `NEGADO`, `LEITURA`.
+Depois da linha `API = ...`, as listas do que a IA pode e nêo pode usar. Confira a ordem: `AREA` tem de vir antes, porque a etapa 6 usa `AREA` dentro de um texto definido logo depois de `LEITURA`. O topo do arquivo fica nesta ordem: `AQUI` → `carregar_env` → `TOKEN` → `DONOS` → `AREA`, `MODELO`, `CLAUDE`, `TEMPO_IA` → `API` → `H`, `NEGADO`, `LEITURA`.
 
 ```python
 H = os.path.expanduser("~")
@@ -349,9 +349,9 @@ LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
 ```
 
-> Atenção à sintaxe: no Claude Code, `"./**"` é "tudo dentro da pasta onde o `claude` roda" (a `area/`); `"/x"` também é relativo à pasta; caminho absoluto é `"//x"` e a home é `"~/"`.
+> Atençêo à sintaxe: no Claude Code, `"./**"` é "tudo dentro da pasta onde o `claude` roda" (a `area/`); `"/x"` também é relativo à pasta; caminho absoluto é `"//x"` e a home é `"~/"`.
 > Por isso `f"Read(/{AQUI}/.env)"` tem uma barra a mais de propósito: `AQUI` já começa com `/`, e o resultado é `Read(//home/.../.env)`.
-> Com `/home/...` a regra não pega.
+> Com `/home/...` a regra nêo pega.
 
 Depois de `enviar`, acrescente o ambiente limpo e a chamada ao Claude:
 
@@ -387,7 +387,7 @@ No `tratar`, troque a última linha (`enviar(chat, f"Você disse: {texto}")`) po
     enviar(chat, claude(texto, LEITURA) or "(sem resposta)")
 ```
 
-Troque o `main` (cria a área e um erro não derruba o bot):
+Troque o `main` (cria a área e um erro nêo derruba o bot):
 
 ```python
 def main():
@@ -404,7 +404,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)
@@ -427,20 +427,20 @@ python3 ferramentas/telegram_falso.py fala --de 111 "leia o arquivo $PWD/fora/cr
 
 Da etapa 5 em diante cada resposta passa pelo Claude e leva de 10 a 60 s (às vezes mais). O `fala` espera 120 s; se a sua máquina for lenta, use `--espera 200`.
 
-Esperado: a 1ª resposta traz números do disco (ex.: "Sobram 1,3 TB livres de 3,7 TB"); a 2ª diz que **não conseguiu apagar** (o comando foi negado); `ls area/logs | wc -l` → `3`; e a isca **não aparece** na resposta (o bot diz que não pode ler fora da pasta de trabalho; `isca-7f3k9q` nunca sai). Cada pergunta leva de 10 a 60 s.
+Esperado: a 1ª resposta traz números do disco (ex.: "Sobram 1,3 TB livres de 3,7 TB"); a 2ª diz que **nêo conseguiu apagar** (o comando foi negado); `ls area/logs | wc -l` → `3`; e a isca **nêo aparece** na resposta (o bot diz que nêo pode ler fora da pasta de trabalho; `isca-7f3k9q` nunca sai). Cada pergunta leva de 10 a 60 s.
 
 ---
 
 ## Etapa 6 — Quando o pedido muda algo, a IA só PROPÕE e o bot confere
 
-A IA continua só lendo, mas agora responde num **formato fixo** (JSON): a resposta e, se precisar mudar algo, a ação com os comandos exatos. O bot **confere** esses comandos com regras simples, sem IA:
+A IA continua só lendo, mas agora responde num **formato fixo** (JSON): a resposta e, se precisar mudar algo, a açêo com os comandos exatos. O bot **confere** esses comandos com regras simples, sem IA:
 
 - só `rm`, `rmdir`, `mv`, `cp`, `mkdir`, `touch`, `gzip`, `gunzip`, `tar`;
 - só opções da lista curta de cada um (nada de `-C`, `-t`, `--directory=`, `--target-directory=`, que levam para fora);
 - sem `|`, `;`, `$`, crase, `<`, `>`, `~` ou `..`; todo caminho (mesmo por atalho) dentro de `area/`;
 - nunca apagar nem mover a própria área.
 
-Como o bot roda os comandos sem shell, curinga (`*`, `?`, `[`) não funcionaria: o conferidor recusa a proposta ("curinga não funciona aqui…"), e a IA é orientada a citar cada arquivo pelo nome e usar `rmdir` para a pasta vazia.
+Como o bot roda os comandos sem shell, curinga (`*`, `?`, `[`) nêo funcionaria: o conferidor recusa a proposta ("curinga nêo funciona aqui…"), e a IA é orientada a citar cada arquivo pelo nome e usar `rmdir` para a pasta vazia.
 
 Na linha do `import`, acrescente `re` e `shlex`:
 
@@ -451,7 +451,7 @@ import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 Depois de `LEITURA = [...]`, acrescente:
 
 ```python
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -465,24 +465,24 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 ```
 
-Troque a função `claude` por esta (aceita o formato fixo):
+Troque a funçêo `claude` por esta (aceita o formato fixo):
 
 ```python
 def claude(prompt, permitido, esquema=None):
@@ -513,7 +513,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$<>\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&&"):
         args = shlex.split(parte.strip())
@@ -525,22 +525,22 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
     return cmds
 ```
 
-Antes do `def tratar`, a memória do pedido que espera confirmação:
+Antes do `def tratar`, a memória do pedido que espera confirmaçêo:
 
 ```python
 pendente = {}  # chat -> {"acao":..., "pedido":..., "t":...}
@@ -550,7 +550,7 @@ No `tratar`, troque as duas últimas linhas (o `sendChatAction` e o `enviar(chat
 
 ```python
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
     tg("sendChatAction", chat_id=chat, action="typing")
     r = claude(texto, LEITURA, ESQUEMA)
@@ -559,10 +559,10 @@ No `tratar`, troque as duas últimas linhas (o `sendChatAction` e o `enviar(chat
         try:
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         enviar(chat, r["resposta"])
 ```
@@ -584,10 +584,10 @@ Saída esperada:
 aceito  rm -r logs
 recusa  rm -r ~/.ssh - passos com caractere proibido
 recusa  rm -r logs; reboot - passos com caractere proibido
-recusa  tar -C/tmp -xf a.tar - opção não permitida: -C/tmp
-recusa  cp --target-directory=/tmp logs - opção não permitida: --target-directory=/tmp
-recusa  rm -rf . - não posso apagar ou mover a própria área
-recusa  rm logs/*.log - curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome
+recusa  tar -C/tmp -xf a.tar - opçêo nêo permitida: -C/tmp
+recusa  cp --target-directory=/tmp logs - opçêo nêo permitida: --target-directory=/tmp
+recusa  rm -rf . - nêo posso apagar ou mover a própria área
+recusa  rm logs/*.log - curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome
 ```
 
 **Teste com o bot** (reinicie o bot no terminal 2):
@@ -597,7 +597,7 @@ python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 ls area/logs | wc -l
 ```
 
-Esperado: a resposta termina com `Vou fazer: ...`, `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` e `Confirma? (sim/não)`; e `3` (nada apagado).
+Esperado: a resposta termina com `Vou fazer: ...`, `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` e `Confirma? (sim/nêo)`; e `3` (nada apagado).
 
 ---
 
@@ -605,8 +605,8 @@ Esperado: a resposta termina com `Vou fazer: ...`, `Comandos: rm logs/app-1.log 
 
 Agora o "sim" roda **exatamente** os comandos mostrados — pelo bot, sem shell, dentro da área. Cuidados:
 
-- só confirma com `sim`, `s`, `confirmo`, `confirma`, `yes` (mesmo em frase: "sim, pode apagar") ou com `pode`, `ok`, `manda`, `faz` **sozinhos**; mensagem com `?` nunca confirma ("pode listar antes?" não apaga nada), e nem frase com `mas`, `antes`, `primeiro`, `depois` ou `espera` ("sim, mas antes faz backup" não é um sim limpo: cancela e você pede de novo); Qualquer negação na frase também cancela (`não`, `nao`, `no`, `not`, `cancela`, `cancelar`, `nunca`, `pare`, `para`): "sim, não apaga" não apaga nada.
-- qualquer outra resposta descarta o pedido pendente: `não` (ou `cancela`) responde "Cancelado. Nada foi mudado."; outra frase vira um **pedido novo** e vai para a IA;
+- só confirma com `sim`, `s`, `confirmo`, `confirma`, `yes` (mesmo em frase: "sim, pode apagar") ou com `pode`, `ok`, `manda`, `faz` **sozinhos**; mensagem com `?` nunca confirma ("pode listar antes?" nêo apaga nada), e nem frase com `mas`, `antes`, `primeiro`, `depois` ou `espera` ("sim, mas antes faz backup" nêo é um sim limpo: cancela e você pede de novo); Qualquer negaçêo na frase também cancela (`nêo`, `nao`, `no`, `not`, `cancela`, `cancelar`, `nunca`, `pare`, `para`): "sim, nêo apaga" nêo apaga nada.
+- qualquer outra resposta descarta o pedido pendente: `nêo` (ou `cancela`) responde "Cancelado. Nada foi mudado."; outra frase vira um **pedido novo** e vai para a IA;
 - o pedido vale 10 minutos;
 - antes de extrair um `.tar`, o bot lista o pacote e recusa caminho absoluto, `..` ou link.
 
@@ -627,17 +627,17 @@ Depois de `validar`, acrescente:
 
 ```python
 def eh_sim(texto):
-    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' nêo."""
     if "?" in texto:
         return False
-    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
     if not palavras:
         return False
     if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
         return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
     if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
-                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
-        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+                                   "nêo", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" nêo é um sim limpo: cancela e pede de novo
     return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
 
 
@@ -648,7 +648,7 @@ def conferir_tar(args):
     arq = args[-1]
     p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
     if p.returncode:
-        raise ValueError("não consegui listar o pacote")
+        raise ValueError("nêo consegui listar o pacote")
     for linha in p.stdout.splitlines():
         nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
         if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
@@ -675,7 +675,7 @@ No `tratar`, troque o bloco da etapa 6
 
 ```python
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
 ```
 
@@ -693,18 +693,18 @@ por:
         return
     if p:
         pendente.pop(chat)
-        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
-        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+        palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("nêo", "nao", "n", "cancela", "cancelar", "no"):
             enviar(chat, "Cancelado. Nada foi mudado.")
             return
 ```
 
-**Teste da confirmação** (sem IA):
+**Teste da confirmaçêo** (sem IA):
 
 ```bash
 TELEGRAM_BOT_TOKEN=x python3 -c "
 import bot
-for t in ['sim', 'sim, pode apagar', 'pode', 'pode listar antes?', 'faz um backup primeiro', 'sim, mas antes faz backup', 'sim, não apaga', 'não']:
+for t in ['sim', 'sim, pode apagar', 'pode', 'pode listar antes?', 'faz um backup primeiro', 'sim, mas antes faz backup', 'sim, nêo apaga', 'nêo']:
     print(repr(t), bot.eh_sim(t))
 "
 ```
@@ -715,14 +715,14 @@ Esperado: `True` para os três primeiros, `False` para os cinco últimos.
 
 ```bash
 python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
-python3 ferramentas/telegram_falso.py fala --de 111 "não"
+python3 ferramentas/telegram_falso.py fala --de 111 "nêo"
 ls area/logs | wc -l
 python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 python3 ferramentas/telegram_falso.py fala --de 111 "sim"
 ls area
 ```
 
-Esperado: `Confirma? (sim/não)` → `Cancelado. Nada foi mudado.` → `3` → `Confirma? (sim/não)` → `Feito:` e `rmdir logs → ok` (um `rm` por arquivo e o `rmdir` no fim) → `ls area` sem `logs` (vazio: a pasta logs sumiu).
+Esperado: `Confirma? (sim/nêo)` → `Cancelado. Nada foi mudado.` → `3` → `Confirma? (sim/nêo)` → `Feito:` e `rmdir logs → ok` (um `rm` por arquivo e o `rmdir` no fim) → `ls area` sem `logs` (vazio: a pasta logs sumiu).
 
 ---
 
@@ -784,7 +784,7 @@ Esperado (os textos e as horas variam; esta é uma saída real):
 {"ev": "recusado", "de": 222, "nome": "Teste", "t": "2026-11-20T02:44:38"}
 {"ev": "pedido", "de": 111, "texto": "apaga a pasta logs", "t": "2026-11-20T02:44:39"}
 {"ev": "proposta", "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs"}, "t": "2026-11-20T02:44:45"}
-{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Não tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
+{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Nêo tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
 {"ev": "aprovado", "de": 111, "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs"}, "t": "2026-11-20T02:44:47"}
 {"ev": "feito", "resultado": "rm logs/app-1.log → ok\nrm logs/app-2.log → ok\nrm logs/app-3.log → ok\nrmdir logs → ok", "t": "2026-11-20T02:44:47"}
 ```
@@ -802,21 +802,21 @@ curl -fsSLo testes/testar_travas.py https://raw.githubusercontent.com/inematds/t
 python3 testes/testar_travas.py
 ```
 
-Apague também a isca da etapa 5, que não precisa mais ficar na VPS: `rm -r fora`.
+Apague também a isca da etapa 5, que nêo precisa mais ficar na VPS: `rm -r fora`.
 
-O teste importa o seu `bot.py` e usa os nomes do texto (`AREA`, `AUDITORIA`, `LEITURA`, `ESQUEMA`, `claude`, `validar`, `eh_sim`, `tratar`, `enviar`, `tg`): se você renomeou algo, ele quebra. Ele usa uma área e uma auditoria **temporárias** (não mexe no bot no ar) e monta duas armadilhas de propósito: um `settings.json` que libera `rm` (o bot tem de ignorar) e um arquivo-isca com um segredo falso **fora** da área (a IA não pode mostrar o conteúdo). Saída esperada: todas as linhas `PASSOU ...` e, no fim, `TUDO OK`.
+O teste importa o seu `bot.py` e usa os nomes do texto (`AREA`, `AUDITORIA`, `LEITURA`, `ESQUEMA`, `claude`, `validar`, `eh_sim`, `tratar`, `enviar`, `tg`): se você renomeou algo, ele quebra. Ele usa uma área e uma auditoria **temporárias** (nêo mexe no bot no ar) e monta duas armadilhas de propósito: um `settings.json` que libera `rm` (o bot tem de ignorar) e um arquivo-isca com um segredo falso **fora** da área (a IA nêo pode mostrar o conteúdo). Saída esperada: todas as linhas `PASSOU ...` e, no fim, `TUDO OK`.
 
 > Todos os 52 testes valem na sua VPS: o `.env` falso e a isca com segredo falso ficam numa pasta temporária criada pelo próprio teste. Saída esperada: 52 linhas `PASSOU` e `TUDO OK`.
 
 Pare o bot de teste (Ctrl+C nos terminais 1 e 2). Agora o bot vira um **serviço do systemd** (o programa do Linux que liga e mantém outros programas no ar): ele volta sozinho se cair e quando a VPS reinicia. É um serviço **do seu usuário** (`--user`), sem `sudo`.
 
-Confira antes onde o `claude` está, porque o serviço não lê o seu `~/.bashrc`:
+Confira antes onde o `claude` está, porque o serviço nêo lê o seu `~/.bashrc`:
 
 ```bash
 which claude
 ```
 
-Esperado: `/home/<você>/.local/bin/claude` ou `/home/<você>/.npm-global/bin/claude` (as duas pastas estão no `PATH` da unidade abaixo). Se for outra pasta, acrescente-a na linha `Environment=PATH=...`.
+Esperado: `/home/<você>/.local/bin/claude` ou `/home/<você>/.npm-global/bin/claude` (as duas pastas estêo no `PATH` da unidade abaixo). Se for outra pasta, acrescente-a na linha `Environment=PATH=...`.
 
 Com o `.env` já com o seu token real e o seu `DONOS`, crie a pasta das unidades e o arquivo do serviço. O `cat > arquivo <<'EOF' … EOF` (heredoc) grava no arquivo tudo o que está entre as duas linhas:
 
@@ -859,14 +859,14 @@ Saída esperada: `active` e uma linha `no ar · donos=1 · área=/home/<você>/k
 mkdir -p area/logs && for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done
 ```
 
-E mande ao seu bot: `quanto espaço livre tem no disco?` → resposta com os números do seu disco. `apaga a pasta logs` → "Vou fazer: …", `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` e `Confirma? (sim/não)`. Responda `não` → "Cancelado. Nada foi mudado.". Pronto: o bot está no ar, só você fala com ele, a IA só lê e nada muda sem o seu "sim".
+E mande ao seu bot: `quanto espaço livre tem no disco?` → resposta com os números do seu disco. `apaga a pasta logs` → "Vou fazer: …", `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` e `Confirma? (sim/nêo)`. Responda `nêo` → "Cancelado. Nada foi mudado.". Pronto: o bot está no ar, só você fala com ele, a IA só lê e nada muda sem o seu "sim".
 
-Uma instância só: não rode `python3 bot.py` à mão com o serviço ligado (os dois disputariam as mensagens). Parar: `systemctl --user stop telegram-vps-remoto`.
+Uma instância só: nêo rode `python3 bot.py` à mêo com o serviço ligado (os dois disputariam as mensagens). Parar: `systemctl --user stop telegram-vps-remoto`.
 
 ---
 
-## O que ele NÃO faz (de propósito)
+## O que ele NêO faz (de propósito)
 
-- Não instala programas, não mexe fora de `area/`, não usa `sudo`, não lê suas chaves.
-- Não guarda conversa: cada pedido é novo (o "sim" vale só para a última proposta, por 10 minutos).
-- Não usa API paga: se aparecer `ANTHROPIC_API_KEY` no ambiente, o bot tira antes de chamar o Claude.
+- Nêo instala programas, nêo mexe fora de `area/`, nêo usa `sudo`, nêo lê suas chaves.
+- Nêo guarda conversa: cada pedido é novo (o "sim" vale só para a última proposta, por 10 minutos).
+- Nêo usa API paga: se aparecer `ANTHROPIC_API_KEY` no ambiente, o bot tira antes de chamar o Claude.

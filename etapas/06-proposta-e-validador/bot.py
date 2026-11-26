@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Etapa 6 — Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
 
-Travas no CÓDIGO (não só no prompt):
+Travas no CÓDIGO (nêo só no prompt):
   1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
   2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
      de consulta), presa na pasta de trabalho.
   3. Se a IA quiser mudar algo, ela só PROPÕE comandos. O bot confere (lista curta de comandos,
      todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Nesta etapa o bot
-     ainda NÃO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.
+     ainda NêO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.
   4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
   (A auditoria entra na etapa 8.)
 
-Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+Só biblioteca padrêo do Python. Long polling (sem webhook, sem porta aberta).
 """
 import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -53,7 +53,7 @@ NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = c
 # Sem "du": "du --files0-from=<arquivo>" devolve o conteúdo do arquivo na mensagem de erro.
 LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -67,19 +67,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 
@@ -128,7 +128,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$<>\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&&"):
         args = shlex.split(parte.strip())
@@ -140,15 +140,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -171,7 +171,7 @@ def tratar(msg):
         enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
         return
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
     tg("sendChatAction", chat_id=chat, action="typing")
     r = claude(texto, LEITURA, ESQUEMA)
@@ -180,10 +180,10 @@ def tratar(msg):
         try:
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         enviar(chat, r["resposta"])
 
@@ -202,7 +202,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)

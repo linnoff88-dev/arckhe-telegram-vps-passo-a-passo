@@ -1,6 +1,6 @@
 # Etapa 1 — Preparar a VPS e o Claude Code
 
-Ainda não tem `bot.py`. Nesta etapa você só confere a base:
+Ainda nêo tem `bot.py`. Nesta etapa você só confere a base:
 
 ```bash
 python3 --version                          # Python 3.10 ou mais novo

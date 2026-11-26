@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
 
-Travas no CÓDIGO (não só no prompt):
+Travas no CÓDIGO (nêo só no prompt):
   1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
   2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
      de consulta), presa na pasta de trabalho.
@@ -11,7 +11,7 @@ Travas no CÓDIGO (não só no prompt):
   4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
   5. Tudo vai para auditoria.jsonl (sem o token).
 
-Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+Só biblioteca padrêo do Python. Long polling (sem webhook, sem porta aberta).
 """
 import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -55,7 +55,7 @@ NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = c
 # Sem "du": "du --files0-from=<arquivo>" devolve o conteúdo do arquivo na mensagem de erro.
 LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -71,19 +71,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 
@@ -138,7 +138,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$<>\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&&"):
         args = shlex.split(parte.strip())
@@ -150,15 +150,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -166,17 +166,17 @@ def validar(passos):
 
 
 def eh_sim(texto):
-    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' nêo."""
     if "?" in texto:
         return False
-    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
     if not palavras:
         return False
     if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
         return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
     if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
-                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
-        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+                                   "nêo", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" nêo é um sim limpo: cancela e pede de novo
     return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
 
 
@@ -187,7 +187,7 @@ def conferir_tar(args):
     arq = args[-1]
     p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
     if p.returncode:
-        raise ValueError("não consegui listar o pacote")
+        raise ValueError("nêo consegui listar o pacote")
     for linha in p.stdout.splitlines():
         nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
         if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
@@ -241,8 +241,8 @@ def tratar(msg):
     if p:
         pendente.pop(chat)
         auditar(ev="cancelado", de=quem, texto=texto[:200])
-        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
-        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+        palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("nêo", "nao", "n", "cancela", "cancelar", "no"):
             enviar(chat, "Cancelado. Nada foi mudado.")
             return
     auditar(ev="pedido", de=quem, texto=texto[:500])
@@ -254,12 +254,12 @@ def tratar(msg):
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
             auditar(ev="proposta_recusada", acao=acao, motivo=str(e))
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
         auditar(ev="proposta", acao=acao)
         auditar(ev="resposta", texto=r["resposta"][:500])
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         auditar(ev="resposta", texto=r["resposta"][:500])
         enviar(chat, r["resposta"])
@@ -279,7 +279,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         auditar(ev="erro", erro=str(e)[:300])
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:

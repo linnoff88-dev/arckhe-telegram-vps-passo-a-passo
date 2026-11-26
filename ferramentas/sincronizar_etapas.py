@@ -36,7 +36,7 @@ a = ('     todo caminho dentro da área, sem shell), guarda e pergunta "Confirma
      '     quem roda é o próprio bot, exatamente o que foi mostrado. A IA nunca tem ferramenta de escrita.')
 assert a in t, "docstring"
 t = t.replace(a, '     todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Nesta etapa o bot\n'
-                 '     ainda NÃO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.')
+                 '     ainda NêO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.')
 for pad in (r'PRAZO_OK = .*\n', r'SIM_FORTE = .*\n', r'SIM_SOZINHO = .*\n'):
     t, n = re.subn(pad, "", t)
     assert n == 1, pad
@@ -45,7 +45,7 @@ for fn in ("eh_sim", "conferir_tar", "executar"):
     assert n == 1, fn
 velho = t[t.index("    p = pendente.get(chat)"):t.index('    tg("sendChatAction"')]
 t = t.replace(velho, '    if pendente.pop(chat, None):\n'
-                     '        enviar(chat, "Ainda não executo nada: o \\"sim\\" entra na etapa 7. Pedido descartado.")\n'
+                     '        enviar(chat, "Ainda nêo executo nada: o \\"sim\\" entra na etapa 7. Pedido descartado.")\n'
                      '        return\n')
 open(E("06-proposta-e-validador", "bot.py"), "w").write(t)
 

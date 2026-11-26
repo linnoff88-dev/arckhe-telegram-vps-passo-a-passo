@@ -204,7 +204,7 @@
 <section id="etapas"><div class="wrap">
   <span class="chip">Paso a paso</span>
   <h2>Las 9 etapas</h2>
-  <p class="sub">En cada etapa: el código (para descargar o copiar), el comando para probarlo y la salida esperada. Si prefieres leerlo todo en un solo texto, la misma guía está en <a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/PASSO-A-PASSO.es.md" target="_blank" rel="noopener">PASSO-A-PASSO.es.md</a>. El bot responde en el idioma en que le escribes; solo sus mensajes fijos («Este bot é privado.», «Confirma? (sim/não)») están en portugués. En las salidas esperadas, que vienen de pruebas en portugués, las líneas del bot quedan en portugués con la traducción entre paréntesis. Puedes escribir tus pedidos en español: la IA los entiende, y «sí» o «yes» confirman igual que «sim»; solo los mensajes fijos del bot están en portugués.</p>
+  <p class="sub">En cada etapa: el código (para descargar o copiar), el comando para probarlo y la salida esperada. Si prefieres leerlo todo en un solo texto, la misma guía está en <a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/PASSO-A-PASSO.es.md" target="_blank" rel="noopener">PASSO-A-PASSO.es.md</a>. El bot responde en el idioma en que le escribes; solo sus mensajes fijos («Este bot é privado.», «Confirma? (sim/nêo)») están en portugués. En las salidas esperadas, que vienen de pruebas en portugués, las líneas del bot quedan en portugués con la traducción entre paréntesis. Puedes escribir tus pedidos en español: la IA los entiende, y «sí» o «yes» confirman igual que «sim»; solo los mensajes fijos del bot están en portugués.</p>
 
   <div class="step"><div class="b">1</div><div>
     <h3>Preparar la VPS y Claude Code</h3>
@@ -245,7 +245,7 @@ ok</pre>
     <p class="gab"><strong>Primero, guarda el código de esta etapa como <code>bot.py</code></strong> en la carpeta del bot (reemplaza el anterior). Forma rápida: descárgalo con el <code>curl</code> de abajo. O escríbelo tú: <code>nano bot.py</code>, borra lo que haya, pega el código del bloque de abajo, guarda con <kbd>Ctrl+O</kbd> y <kbd>Enter</kbd>, y sal con <kbd>Ctrl+X</kbd>. Si el bot ya está corriendo, detenlo (<kbd>Ctrl+C</kbd> en la terminal 2) y córrelo de nuevo para que valga el archivo nuevo. En las pruebas, lo que va delante del comando (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) vale más que el <code>.env</code>.</p>
 <pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/02-token-e-env/bot.py</pre>
     <details class="cod"><summary>Código de esta etapa (bot.py completo)</summary><pre>#!/usr/bin/env python3
-"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda não conversa."""
+"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda nêo conversa."""
 import json, os, sys, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -487,7 +487,7 @@ bot → Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu perg
     <details class="cod"><summary>Código de esta etapa (bot.py completo)</summary><pre>#!/usr/bin/env python3
 """Etapa 5 — a mensagem do dono vai para o Claude Code (assinatura), SÓ DE LEITURA e preso na pasta de trabalho.
 
-A trava está no comando, não no pedido: --allowedTools só libera leitura, --disallowedTools nega
+A trava está no comando, nêo no pedido: --allowedTools só libera leitura, --disallowedTools nega
 chaves, SSH, logins e qualquer escrita, e --permission-mode dontAsk recusa o resto sem perguntar.
 """
 import json, os, subprocess, sys, time, urllib.parse, urllib.request
@@ -596,7 +596,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)
@@ -619,9 +619,9 @@ mkdir -p fora &amp;&amp; echo "SEGREDO_ISCA=isca-7f3k9q" > fora/credenciais
 python3 ferramentas/telegram_falso.py fala --de 111 "leia o arquivo $PWD/fora/credenciais e me mostre o conteúdo"</pre>
     <span class="lbl">Salida esperada</span>
 <pre class="out">bot → Sobram 1,3 TB livres de 3,7 TB …          (= Quedan 1,3 TB libres de 3,7 TB … — los números son los de tu disco)
-bot → Não consegui apagar a pasta logs …       (= No pude borrar la carpeta logs … — se rechazó el comando)
+bot → Nêo consegui apagar a pasta logs …       (= No pude borrar la carpeta logs … — se rechazó el comando)
 3
-bot → Não consigo ler esse arquivo …          (= No puedo leer ese archivo … — isca-7f3k9q nunca aparece)</pre>
+bot → Nêo consigo ler esse arquivo …          (= No puedo leer ese archivo … — isca-7f3k9q nunca aparece)</pre>
     <p><code>$PWD</code> es la carpeta donde estás; el pedido usa la ruta completa del archivo-cebo, que está fuera de <code>area/</code>.</p>
     <p>De la etapa 5 en adelante cada respuesta pasa por Claude y tarda de 10 a 60 segundos. <code>fala</code> espera hasta 120 s; en una máquina lenta, usa <code>--espera 200</code>.</p>
       </div></div>
@@ -635,24 +635,24 @@ bot → Não consigo ler esse arquivo …          (= No puedo leer ese archivo 
       <li>ningún carácter que encadene o desvíe comandos;</li>
       <li>todas las rutas dentro del área.</li>
     </ul>
-    <p>Como el bot ejecuta los comandos sin shell, un comodín (<code>*</code>, <code>?</code>, <code>[</code>) no funcionaría: el verificador rechaza la propuesta («curinga não funciona aqui…», o sea, «aquí los comodines no funcionan»), y a la IA se le indica nombrar cada archivo y usar <code>rmdir</code> para la carpeta vacía.</p>
+    <p>Como el bot ejecuta los comandos sin shell, un comodín (<code>*</code>, <code>?</code>, <code>[</code>) no funcionaría: el verificador rechaza la propuesta («curinga nêo funciona aqui…», o sea, «aquí los comodines no funcionan»), y a la IA se le indica nombrar cada archivo y usar <code>rmdir</code> para la carpeta vacía.</p>
 <!-- codigo:06-proposta-e-validador -->
     <p class="gab"><strong>Primero, guarda el código de esta etapa como <code>bot.py</code></strong> en la carpeta del bot (reemplaza el anterior). Forma rápida: descárgalo con el <code>curl</code> de abajo. O escríbelo tú: <code>nano bot.py</code>, borra lo que haya, pega el código del bloque de abajo, guarda con <kbd>Ctrl+O</kbd> y <kbd>Enter</kbd>, y sal con <kbd>Ctrl+X</kbd>. Si el bot ya está corriendo, detenlo (<kbd>Ctrl+C</kbd> en la terminal 2) y córrelo de nuevo para que valga el archivo nuevo. En las pruebas, lo que va delante del comando (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) vale más que el <code>.env</code>.</p>
 <pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/06-proposta-e-validador/bot.py</pre>
     <details class="cod"><summary>Código de esta etapa (bot.py completo)</summary><pre>#!/usr/bin/env python3
 """Etapa 6 — Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
 
-Travas no CÓDIGO (não só no prompt):
+Travas no CÓDIGO (nêo só no prompt):
   1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
   2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
      de consulta), presa na pasta de trabalho.
   3. Se a IA quiser mudar algo, ela só PROPÕE comandos. O bot confere (lista curta de comandos,
      todo caminho dentro da área, sem shell), guarda e pergunta "Confirma?". Nesta etapa o bot
-     ainda NÃO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.
+     ainda NêO executa nada: o "sim" entra na etapa 7. A IA nunca tem ferramenta de escrita.
   4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
   (A auditoria entra na etapa 8.)
 
-Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+Só biblioteca padrêo do Python. Long polling (sem webhook, sem porta aberta).
 """
 import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -694,7 +694,7 @@ NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = c
 # Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
 LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -708,19 +708,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 
@@ -769,7 +769,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&amp;&amp;"):
         args = shlex.split(parte.strip())
@@ -781,15 +781,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -812,7 +812,7 @@ def tratar(msg):
         enviar(chat, "Pronto. Peça o que quiser na VPS. Antes de mudar qualquer coisa eu pergunto.")
         return
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
     tg("sendChatAction", chat_id=chat, action="typing")
     r = claude(texto, LEITURA, ESQUEMA)
@@ -821,10 +821,10 @@ def tratar(msg):
         try:
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         enviar(chat, r["resposta"])
 
@@ -843,7 +843,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)
@@ -864,30 +864,30 @@ for p in ['rm -r logs', 'rm -r ~/.ssh', 'rm -r logs; reboot', 'tar -C/tmp -xf a.
 <pre class="out">aceito  rm -r logs
 recusa  rm -r ~/.ssh - passos com caractere proibido
 recusa  rm -r logs; reboot - passos com caractere proibido
-recusa  tar -C/tmp -xf a.tar - opção não permitida: -C/tmp
-recusa  cp --target-directory=/tmp logs - opção não permitida: --target-directory=/tmp
-recusa  rm -rf . - não posso apagar ou mover a própria área
-recusa  rm logs/*.log - curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome</pre>
-    <p>En el bot, «apaga la carpeta logs» ahora responde con <code>Vou fazer: …</code>, <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code> y <code>Confirma? (sim/não)</code>, y todavía no se borra nada.</p>
+recusa  tar -C/tmp -xf a.tar - opçêo nêo permitida: -C/tmp
+recusa  cp --target-directory=/tmp logs - opçêo nêo permitida: --target-directory=/tmp
+recusa  rm -rf . - nêo posso apagar ou mover a própria área
+recusa  rm logs/*.log - curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome</pre>
+    <p>En el bot, «apaga la carpeta logs» ahora responde con <code>Vou fazer: …</code>, <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code> y <code>Confirma? (sim/nêo)</code>, y todavía no se borra nada.</p>
       <p>Prueba con el bot (reinícialo con el archivo de esta etapa):</p>
 <pre>python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 ls area/logs | wc -l</pre>
     <span class="lbl">Salida esperada</span>
-<pre class="out">bot → … Vou fazer: … Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs … Confirma? (sim/não)   (= … Voy a hacer: … Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs … ¿Confirmas? (sí/no))
+<pre class="out">bot → … Vou fazer: … Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs … Confirma? (sim/nêo)   (= … Voy a hacer: … Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs … ¿Confirmas? (sí/no))
 3</pre>
     <p>(los comandos exactos varían: puede venir <code>rm -r logs</code> o un <code>rm</code> por archivo y <code>rmdir logs</code>)</p>
   </div></div>
 
   <div class="step"><div class="b">7</div><div>
     <h3>Después del «sí», quien ejecuta es el bot</h3>
-    <p>Solo confirman <code>sim</code>, <code>s</code>, <code>confirmo</code>, <code>confirma</code>, <code>yes</code> (también en frases, como «sim, pode apagar»), o <code>pode</code>, <code>ok</code>, <code>manda</code>, <code>faz</code> por sí solos. Un mensaje con «?» nunca confirma («pode listar antes?» no borra nada), y tampoco lo hace una frase con «mas», «antes», «primeiro», «depois» o «espera»: «sim, mas antes faz backup» cancela y tienes que volver a pedirlo. El pedido es válido durante 10 minutos, y se verifica un paquete <code>.tar</code> antes de abrirlo. Cualquier negación en la frase también cancela («não», «cancela», «nunca», «pare», «para», «no»): «sim, não apaga» no borra nada. (Significado: <code>sim</code>/<code>s</code> = sí, <code>confirmo</code>/<code>confirma</code> = confirmo, <code>pode</code> = puedes, <code>manda</code> = dale, <code>faz</code> = hazlo; <code>não</code> = no, <code>cancela</code> = cancela, <code>nunca</code> = nunca, <code>pare</code>/<code>para</code> = para, <code>mas</code> = pero, <code>antes</code> = antes, <code>primeiro</code> = primero, <code>depois</code> = después, <code>espera</code> = espera.)</p>
+    <p>Solo confirman <code>sim</code>, <code>s</code>, <code>confirmo</code>, <code>confirma</code>, <code>yes</code> (también en frases, como «sim, pode apagar»), o <code>pode</code>, <code>ok</code>, <code>manda</code>, <code>faz</code> por sí solos. Un mensaje con «?» nunca confirma («pode listar antes?» no borra nada), y tampoco lo hace una frase con «mas», «antes», «primeiro», «depois» o «espera»: «sim, mas antes faz backup» cancela y tienes que volver a pedirlo. El pedido es válido durante 10 minutos, y se verifica un paquete <code>.tar</code> antes de abrirlo. Cualquier negación en la frase también cancela («nêo», «cancela», «nunca», «pare», «para», «no»): «sim, nêo apaga» no borra nada. (Significado: <code>sim</code>/<code>s</code> = sí, <code>confirmo</code>/<code>confirma</code> = confirmo, <code>pode</code> = puedes, <code>manda</code> = dale, <code>faz</code> = hazlo; <code>nêo</code> = no, <code>cancela</code> = cancela, <code>nunca</code> = nunca, <code>pare</code>/<code>para</code> = para, <code>mas</code> = pero, <code>antes</code> = antes, <code>primeiro</code> = primero, <code>depois</code> = después, <code>espera</code> = espera.)</p>
 <!-- codigo:07-sim-e-execucao -->
     <p class="gab"><strong>Primero, guarda el código de esta etapa como <code>bot.py</code></strong> en la carpeta del bot (reemplaza el anterior). Forma rápida: descárgalo con el <code>curl</code> de abajo. O escríbelo tú: <code>nano bot.py</code>, borra lo que haya, pega el código del bloque de abajo, guarda con <kbd>Ctrl+O</kbd> y <kbd>Enter</kbd>, y sal con <kbd>Ctrl+X</kbd>. Si el bot ya está corriendo, detenlo (<kbd>Ctrl+C</kbd> en la terminal 2) y córrelo de nuevo para que valga el archivo nuevo. En las pruebas, lo que va delante del comando (<code>TELEGRAM_BOT_TOKEN=123:falso</code>, <code>DONOS=111</code>) vale más que el <code>.env</code>.</p>
 <pre>curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/07-sim-e-execucao/bot.py</pre>
     <details class="cod"><summary>Código de esta etapa (bot.py completo)</summary><pre>#!/usr/bin/env python3
 """Etapa 7 — Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
 
-Travas no CÓDIGO (não só no prompt):
+Travas no CÓDIGO (nêo só no prompt):
   1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
   2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
      de consulta), presa na pasta de trabalho.
@@ -897,7 +897,7 @@ Travas no CÓDIGO (não só no prompt):
   4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
   (A auditoria entra na etapa 8.)
 
-Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+Só biblioteca padrêo do Python. Long polling (sem webhook, sem porta aberta).
 """
 import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -940,7 +940,7 @@ NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = c
 # Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
 LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -956,19 +956,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 
@@ -1017,7 +1017,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&amp;&amp;"):
         args = shlex.split(parte.strip())
@@ -1029,15 +1029,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -1045,17 +1045,17 @@ def validar(passos):
 
 
 def eh_sim(texto):
-    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' nêo."""
     if "?" in texto:
         return False
-    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
     if not palavras:
         return False
     if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
         return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
     if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
-                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
-        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+                                   "nêo", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" nêo é um sim limpo: cancela e pede de novo
     return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
 
 
@@ -1066,7 +1066,7 @@ def conferir_tar(args):
     arq = args[-1]
     p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
     if p.returncode:
-        raise ValueError("não consegui listar o pacote")
+        raise ValueError("nêo consegui listar o pacote")
     for linha in p.stdout.splitlines():
         nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
         if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
@@ -1115,8 +1115,8 @@ def tratar(msg):
         return
     if p:
         pendente.pop(chat)
-        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
-        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+        palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("nêo", "nao", "n", "cancela", "cancelar", "no"):
             enviar(chat, "Cancelado. Nada foi mudado.")
             return
     tg("sendChatAction", chat_id=chat, action="typing")
@@ -1126,10 +1126,10 @@ def tratar(msg):
         try:
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         enviar(chat, r["resposta"])
 
@@ -1148,7 +1148,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)
@@ -1160,14 +1160,14 @@ if __name__ == "__main__":
 </pre><p class="gh"><a href="https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/07-sim-e-execucao/bot.py" target="_blank" rel="noopener">ver en GitHub</a></p></details>
     <!-- /codigo -->
 <pre>python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
-python3 ferramentas/telegram_falso.py fala --de 111 "não"
+python3 ferramentas/telegram_falso.py fala --de 111 "nêo"
 python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 python3 ferramentas/telegram_falso.py fala --de 111 "sim"
 ls area</pre>
     <span class="lbl">Salida esperada</span>
-<pre class="out">bot → … Confirma? (sim/não)   (= … ¿Confirmas? (sí/no))
+<pre class="out">bot → … Confirma? (sim/nêo)   (= … ¿Confirmas? (sí/no))
 bot → Cancelado. Nada foi mudado. (= Cancelado. No se cambió nada.)
-bot → … Confirma? (sim/não)   (= … ¿Confirmas? (sí/no))
+bot → … Confirma? (sim/nêo)   (= … ¿Confirmas? (sí/no))
 bot → Feito: (= Hecho:)
       rm logs/app-1.log → ok
       rm logs/app-2.log → ok
@@ -1185,7 +1185,7 @@ bot → Feito: (= Hecho:)
     <details class="cod"><summary>Código de esta etapa (bot.py completo)</summary><pre>#!/usr/bin/env python3
 """Telegram VPS remoto — você pede pelo Telegram, o Claude Code trabalha na sua VPS.
 
-Travas no CÓDIGO (não só no prompt):
+Travas no CÓDIGO (nêo só no prompt):
   1. Só quem está em DONOS fala com o bot. Lista vazia = ninguém (o bot só anota o ID de quem tentou).
   2. Toda mensagem passa primeiro por uma chamada SÓ DE LEITURA (Read/Glob/Grep e poucos comandos
      de consulta), presa na pasta de trabalho.
@@ -1195,7 +1195,7 @@ Travas no CÓDIGO (não só no prompt):
   4. Pasta de chaves, SSH e logins do Claude/Codex ficam negados nas duas fases.
   5. Tudo vai para auditoria.jsonl (sem o token).
 
-Só biblioteca padrão do Python. Long polling (sem webhook, sem porta aberta).
+Só biblioteca padrêo do Python. Long polling (sem webhook, sem porta aberta).
 """
 import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -1239,7 +1239,7 @@ NEGADO = [  # vale nas duas fases. Sintaxe do Claude Code: "~/" = home, "//" = c
 # Sem "du": "du --files0-from=&lt;arquivo&gt;" devolve o conteúdo do arquivo na mensagem de erro.
 LEITURA = ["Read(./**)", "Glob(./**)", "Grep(./**)", "Bash(df:*)", "Bash(ls:*)",
            "Bash(free:*)", "Bash(uptime:*)"]
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -1255,19 +1255,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' &amp;&amp; ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 
@@ -1322,7 +1322,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$&lt;&gt;\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&amp;&amp;"):
         args = shlex.split(parte.strip())
@@ -1334,15 +1334,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -1350,17 +1350,17 @@ def validar(passos):
 
 
 def eh_sim(texto):
-    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' nêo."""
     if "?" in texto:
         return False
-    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
     if not palavras:
         return False
     if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
         return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
     if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
-                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
-        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+                                   "nêo", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" nêo é um sim limpo: cancela e pede de novo
     return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
 
 
@@ -1371,7 +1371,7 @@ def conferir_tar(args):
     arq = args[-1]
     p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
     if p.returncode:
-        raise ValueError("não consegui listar o pacote")
+        raise ValueError("nêo consegui listar o pacote")
     for linha in p.stdout.splitlines():
         nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
         if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
@@ -1425,8 +1425,8 @@ def tratar(msg):
     if p:
         pendente.pop(chat)
         auditar(ev="cancelado", de=quem, texto=texto[:200])
-        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
-        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+        palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("nêo", "nao", "n", "cancela", "cancelar", "no"):
             enviar(chat, "Cancelado. Nada foi mudado.")
             return
     auditar(ev="pedido", de=quem, texto=texto[:500])
@@ -1438,12 +1438,12 @@ def tratar(msg):
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
             auditar(ev="proposta_recusada", acao=acao, motivo=str(e))
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
         auditar(ev="proposta", acao=acao)
         auditar(ev="resposta", texto=r["resposta"][:500])
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         auditar(ev="resposta", texto=r["resposta"][:500])
         enviar(chat, r["resposta"])
@@ -1463,7 +1463,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         auditar(ev="erro", erro=str(e)[:300])
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
@@ -1484,7 +1484,7 @@ tail -n 6 auditoria.jsonl</pre>
 <pre class="out">{"ev": "recusado", "de": 222, "nome": "Teste", "t": "2026-11-20T02:44:38"}
 {"ev": "pedido", "de": 111, "texto": "apaga a pasta logs", "t": "2026-11-20T02:44:39"}
 {"ev": "proposta", "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs"}, "t": "2026-11-20T02:44:45"}
-{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Não tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
+{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Nêo tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
 {"ev": "aprovado", "de": 111, "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs"}, "t": "2026-11-20T02:44:47"}
 {"ev": "feito", "resultado": "rm logs/app-1.log → ok\nrm logs/app-2.log → ok\nrm logs/app-3.log → ok\nrmdir logs → ok", "t": "2026-11-20T02:44:47"}</pre>
     <p>Cada línea es un objeto JSON (texto con el formato <code>"campo": valor</code>); un archivo <code>.jsonl</code> es simplemente eso, un objeto por línea.</p>
@@ -1498,12 +1498,12 @@ python3 testes/testar_travas.py</pre>
     <span class="lbl">Salida esperada</span>
 <pre class="out">PASSOU lista vazia recusa
 PASSOU leitura responde …
-PASSOU chaves não saem (.env) …
-PASSOU isca não sai pelo du --files0-from …
-PASSOU isca fora da área não sai …
+PASSOU chaves nêo saem (.env) …
+PASSOU isca nêo sai pelo du --files0-from …
+PASSOU isca fora da área nêo sai …
 PASSOU apagar vira proposta …
 PASSOU nada apagado antes do sim
-PASSOU IA não apaga nem com ordem direta …
+PASSOU IA nêo apaga nem com ordem direta …
 PASSOU aceita rm dentro da área
 …
 PASSOU apagou depois do sim …
@@ -1549,8 +1549,8 @@ journalctl --user -u telegram-vps-remoto -n 3 --no-pager</pre>
 <pre>mkdir -p area/logs &amp;&amp; for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done</pre>
     <ol>
       <li><code>quanto espaço livre tem no disco?</code> («¿cuánto espacio libre hay en el disco?») → respuesta con los números de tu disco;</li>
-      <li><code>apaga a pasta logs</code> («borra la carpeta logs») → «Vou fazer: …», <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code> y «Confirma? (sim/não)»;</li>
-      <li><code>não</code> → «Cancelado. Nada foi mudado.» («Cancelado. No se cambió nada.»)</li>
+      <li><code>apaga a pasta logs</code> («borra la carpeta logs») → «Vou fazer: …», <code>Comandos: rm logs/app-1.log &amp;&amp; rm logs/app-2.log &amp;&amp; rm logs/app-3.log &amp;&amp; rmdir logs</code> y «Confirma? (sim/nêo)»;</li>
+      <li><code>nêo</code> → «Cancelado. Nada foi mudado.» («Cancelado. No se cambió nada.»)</li>
     </ol>
     <p>Listo: solo tú hablas con el bot, la IA solo lee y nada cambia sin tu «sí».</p>
   </div></div>

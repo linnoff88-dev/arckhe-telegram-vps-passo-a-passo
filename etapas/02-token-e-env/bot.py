@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda não conversa."""
+"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda nêo conversa."""
 import json, os, sys, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))

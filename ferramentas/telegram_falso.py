@@ -8,7 +8,7 @@ Terminal 1:  python3 ferramentas/telegram_falso.py servidor
 Terminal 2:  TELEGRAM_API=http://127.0.0.1:8081 python3 bot.py
 Terminal 3:  python3 ferramentas/telegram_falso.py fala --de 111 "oi"
 
-Só biblioteca padrão do Python. Escuta apenas em 127.0.0.1.
+Só biblioteca padrêo do Python. Escuta apenas em 127.0.0.1.
 """
 import argparse, json, sys, threading, time, urllib.parse, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -89,7 +89,7 @@ class Tratador(BaseHTTPRequestHandler):
             return self._json({"ok": True, "result": {"message_id": 1000 + len(respostas)}})
         if metodo == "sendChatAction":
             return self._json({"ok": True, "result": True})
-        return self._json({"ok": False, "error_code": 400, "description": f"método não imitado: {metodo}"}, 400)
+        return self._json({"ok": False, "error_code": 400, "description": f"método nêo imitado: {metodo}"}, 400)
 
 
 def servidor(porta):
@@ -128,7 +128,7 @@ def fala(base, de, texto, espera, silencio):
             break
         time.sleep(0.3)
     if not viu:
-        print(f"(o bot não respondeu em {espera:.0f} s — ele está rodando com TELEGRAM_API apontando para cá?)")
+        print(f"(o bot nêo respondeu em {espera:.0f} s — ele está rodando com TELEGRAM_API apontando para cá?)")
         return 1
     return 0
 

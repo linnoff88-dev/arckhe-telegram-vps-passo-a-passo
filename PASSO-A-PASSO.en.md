@@ -2,7 +2,7 @@
 
 You’ll build a Telegram bot from scratch on your VPS. It receives your requests (“how much free disk space is there?”, “delete the logs folder”) and passes them to **Claude Code through your subscription**. The safeguards live in the **code**, not in the request:
 
-> The bot answers in the language you write in; only its fixed messages ("Este bot é privado.", "Confirma? (sim/não)") are in Portuguese, and "yes"/"sí" confirm like "sim". Code comments are in Portuguese too; the explanation around them is in English.
+> The bot answers in the language you write in; only its fixed messages ("Este bot é privado.", "Confirma? (sim/nêo)") are in Portuguese, and "yes"/"sí" confirm like "sim". Code comments are in Portuguese too; the explanation around them is in English.
 
 1. Only you can talk to the bot (owner list; an empty list means nobody).
 2. The AI can only **read**, and is confined to a working folder (`area/`), without access to keys, SSH, or logins.
@@ -100,7 +100,7 @@ Create this step’s `bot.py` (it only introduces itself to Telegram). Quick way
 
 ```python
 #!/usr/bin/env python3
-"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda não conversa."""
+"""Etapa 2 — o bot lê o token do .env e se apresenta ao Telegram (getMe). Ainda nêo conversa."""
 import json, os, sys, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -409,7 +409,7 @@ def main():
                 if "message" in u:
                     try:
                         tratar(u["message"])
-                    except Exception as e:  # um erro não derruba o bot
+                    except Exception as e:  # um erro nêo derruba o bot
                         enviar(u["message"]["chat"]["id"], f"Deu erro: {str(e)[:200]}")
         except Exception as e:
             print("rede:", str(e)[:120], flush=True)
@@ -445,7 +445,7 @@ The AI still only reads, but now it replies in a **fixed format** (JSON): the re
 - no `|`, `;`, `$`, backtick, `<`, `>`, `~`, or `..`; every path (including shortcuts) must stay inside `area/`;
 - never delete or move the area itself.
 
-Because the bot runs commands without a shell, a wildcard (`*`, `?`, `[`) would not work: the checker refuses the proposal (“curinga não funciona aqui…”, i.e. “wildcards don’t work here”), and the AI is told to name each file and use `rmdir` for the empty folder.
+Because the bot runs commands without a shell, a wildcard (`*`, `?`, `[`) would not work: the checker refuses the proposal (“curinga nêo funciona aqui…”, i.e. “wildcards don’t work here”), and the AI is told to name each file and use `rmdir` for the empty folder.
 
 Add `re` and `shlex` to the `import` line:
 
@@ -456,7 +456,7 @@ import json, os, re, shlex, subprocess, sys, time, urllib.parse, urllib.request
 After `LEITURA = [...]`, add:
 
 ```python
-# Depois do "sim" quem roda é o BOT, não a IA: só estes comandos, só dentro da área, sem shell.
+# Depois do "sim" quem roda é o BOT, nêo a IA: só estes comandos, só dentro da área, sem shell.
 COMANDOS_OK = {"rm", "rmdir", "mv", "cp", "mkdir", "touch", "gzip", "gunzip", "tar"}
 OPCOES_OK = {  # só opções sem valor; qualquer outra (inclusive -C, -t, --directory=) é recusada
     "rm": {"-r", "-f", "-rf", "-fr", "-v"}, "mv": {"-n", "-v"}, "cp": {"-r", "-a", "-n", "-v", "-p"},
@@ -470,19 +470,19 @@ ESQUEMA = json.dumps({
         "resposta": {"type": "string", "description": "o que você descobriu, em linguagem simples, curto, na língua do dono"},
         "acao": {"type": ["object", "null"], "properties": {
             "descricao": {"type": "string", "description": "o que vai mudar, em uma frase"},
-            "passos": {"type": "string", "description": "comandos exatos que serão rodados"}},
+            "passos": {"type": "string", "description": "comandos exatos que serêo rodados"}},
             "required": ["descricao", "passos"]},
     },
     "required": ["resposta", "acao"],
 })
 REGRAS_LEITURA = (
     "Você é o assistente da VPS do dono, falando pelo Telegram. Nesta etapa você SÓ LÊ: investigue o que "
-    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NÃO "
+    f"for preciso dentro de {AREA} e responda. Se o pedido exigir mudar, apagar, mover ou criar algo, NêO "
     "tente fazer: preencha 'acao' com o que mudaria e os comandos exatos (só dentro da pasta de trabalho). "
-    "Os passos são comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
+    "Os passos sêo comandos simples (rm, rmdir, mv, cp, mkdir, touch, gzip, gunzip, tar), separados por ' && ', "
     "com caminhos relativos à pasta de trabalho; nada de |, ;, $, crase, ~ ou '..'. "
     "Sem curingas (* ? [): cite cada arquivo pelo nome, porque o bot executa os comandos sem shell. "
-    "Se não precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
+    "Se nêo precisar mudar nada, 'acao' = null. Nunca mostre chaves, senhas, tokens ou arquivos .env. "
     "Resposta curta, para celular, na mesma língua em que o dono escreveu."
 )
 ```
@@ -518,7 +518,7 @@ def validar(passos):
     if any(c in passos for c in "|;`$<>\n~") or ".." in passos:
         raise ValueError("passos com caractere proibido")
     if any(c in passos for c in "*?["):
-        raise ValueError("curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
+        raise ValueError("curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome")
     cmds = []
     for parte in passos.split("&&"):
         args = shlex.split(parte.strip())
@@ -530,15 +530,15 @@ def validar(passos):
             raise ValueError(f"comando fora da lista: {args[0]}")
         for a in args[1:]:
             if a.startswith("-"):
-                # Opção só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
+                # Opçêo só da lista curta: nada de -C/-t/--directory=... que levam para fora da área.
                 if a not in OPCOES_OK.get(args[0], set()):
-                    raise ValueError(f"opção não permitida: {a}")
+                    raise ValueError(f"opçêo nêo permitida: {a}")
                 continue
             real = os.path.realpath(os.path.join(AREA, a))
             if real != os.path.realpath(AREA) and not real.startswith(os.path.realpath(AREA) + os.sep):
                 raise ValueError(f"caminho fora da área: {a}")
             if real == os.path.realpath(AREA) and args[0] in ("rm", "mv"):
-                raise ValueError("não posso apagar ou mover a própria área")
+                raise ValueError("nêo posso apagar ou mover a própria área")
         cmds.append(args)
     if not cmds:
         raise ValueError("nenhum comando")
@@ -555,7 +555,7 @@ In `tratar`, replace its last two lines (`sendChatAction` and `enviar(chat, clau
 
 ```python
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
     tg("sendChatAction", chat_id=chat, action="typing")
     r = claude(texto, LEITURA, ESQUEMA)
@@ -564,10 +564,10 @@ In `tratar`, replace its last two lines (`sendChatAction` and `enviar(chat, clau
         try:
             cmds = validar(acao.get("passos", ""))
         except ValueError as e:
-            enviar(chat, f"{r['resposta']}\n\nIsso eu não faço por aqui ({e}). Faça direto no terminal, se for o caso.")
+            enviar(chat, f"{r['resposta']}\n\nIsso eu nêo faço por aqui ({e}). Faça direto no terminal, se for o caso.")
             return
         pendente[chat] = {"acao": acao, "cmds": cmds, "t": time.time()}
-        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/não)")
+        enviar(chat, f"{r['resposta']}\n\nVou fazer: {acao['descricao']}\nComandos: {acao['passos']}\n\nConfirma? (sim/nêo)")
     else:
         enviar(chat, r["resposta"])
 ```
@@ -589,10 +589,10 @@ Expected output:
 aceito  rm -r logs
 recusa  rm -r ~/.ssh - passos com caractere proibido
 recusa  rm -r logs; reboot - passos com caractere proibido
-recusa  tar -C/tmp -xf a.tar - opção não permitida: -C/tmp
-recusa  cp --target-directory=/tmp logs - opção não permitida: --target-directory=/tmp
-recusa  rm -rf . - não posso apagar ou mover a própria área
-recusa  rm logs/*.log - curinga não funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome
+recusa  tar -C/tmp -xf a.tar - opçêo nêo permitida: -C/tmp
+recusa  cp --target-directory=/tmp logs - opçêo nêo permitida: --target-directory=/tmp
+recusa  rm -rf . - nêo posso apagar ou mover a própria área
+recusa  rm logs/*.log - curinga nêo funciona aqui (o bot roda sem shell): cite cada arquivo pelo nome
 ```
 
 **Test with the bot** (restart the bot in terminal 2):
@@ -602,7 +602,7 @@ python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 ls area/logs | wc -l
 ```
 
-Expected: the response ends with `Vou fazer: ...`, `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs`, and `Confirma? (sim/não)`; and `3` (nothing deleted).
+Expected: the response ends with `Vou fazer: ...`, `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs`, and `Confirma? (sim/nêo)`; and `3` (nothing deleted).
 
 ---
 
@@ -610,8 +610,8 @@ Expected: the response ends with `Vou fazer: ...`, `Comandos: rm logs/app-1.log 
 
 Now “yes” runs **exactly** the commands shown — by the bot, without a shell, inside the area. Safeguards:
 
-- confirmation accepts only `sim`, `s`, `confirmo`, `confirma`, `yes` (even in a sentence, such as “sim, pode apagar”) or `pode`, `ok`, `manda`, `faz` **by themselves**; a message containing `?` never confirms (“pode listar antes?” won’t delete anything), and neither does a sentence containing `mas`, `antes`, `primeiro`, `depois`, or `espera` (“sim, mas antes faz backup” is not a clean yes: it cancels, and you can ask again); Any negation in the sentence also cancels (`não`, `nao`, `no`, `not`, `cancela`, `cancelar`, `nunca`, `pare`, `para`): “sim, não apaga” deletes nothing.
-- any other reply discards the pending request: `não` (or `cancela`) replies “Cancelado. Nada foi mudado.”; any other sentence becomes a **new request** and goes to the AI;
+- confirmation accepts only `sim`, `s`, `confirmo`, `confirma`, `yes` (even in a sentence, such as “sim, pode apagar”) or `pode`, `ok`, `manda`, `faz` **by themselves**; a message containing `?` never confirms (“pode listar antes?” won’t delete anything), and neither does a sentence containing `mas`, `antes`, `primeiro`, `depois`, or `espera` (“sim, mas antes faz backup” is not a clean yes: it cancels, and you can ask again); Any negation in the sentence also cancels (`nêo`, `nao`, `no`, `not`, `cancela`, `cancelar`, `nunca`, `pare`, `para`): “sim, nêo apaga” deletes nothing.
+- any other reply discards the pending request: `nêo` (or `cancela`) replies “Cancelado. Nada foi mudado.”; any other sentence becomes a **new request** and goes to the AI;
 - the request is valid for 10 minutes;
 - before extracting a `.tar`, the bot lists the archive and rejects absolute paths, `..`, or links.
 
@@ -632,17 +632,17 @@ After `validar`, add:
 
 ```python
 def eh_sim(texto):
-    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' não."""
+    """'sim', 'sim, pode apagar' e 'pode' confirmam; 'pode listar antes?' e 'faz um backup primeiro' nêo."""
     if "?" in texto:
         return False
-    palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
+    palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
     if not palavras:
         return False
     if any(w in ("no", "not") for w in (palavras[0], palavras[1:2] and palavras[1], palavras[-1])):
         return False   # "no" só cancela no começo: em português "no" também é "em + o" ("sim, apaga o que está no log")
     if any(w in palavras for w in ("mas", "pero", "but", "antes", "primeiro", "depois", "espera",
-                                   "não", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
-        return False   # "sim, mas antes faz backup" não é um sim limpo: cancela e pede de novo
+                                   "nêo", "nao", "cancela", "cancelar", "nunca", "pare", "para")):
+        return False   # "sim, mas antes faz backup" nêo é um sim limpo: cancela e pede de novo
     return palavras[0] in SIM_FORTE or (len(palavras) == 1 and palavras[0] in SIM_SOZINHO)
 
 
@@ -653,7 +653,7 @@ def conferir_tar(args):
     arq = args[-1]
     p = subprocess.run(["tar", "-tvf", arq], cwd=AREA, capture_output=True, text=True, timeout=60)
     if p.returncode:
-        raise ValueError("não consegui listar o pacote")
+        raise ValueError("nêo consegui listar o pacote")
     for linha in p.stdout.splitlines():
         nome = linha.split(None, 5)[-1] if len(linha.split(None, 5)) == 6 else linha
         if linha[:1] in ("l", "h") or nome.startswith("/") or ".." in nome.split("/"):
@@ -680,7 +680,7 @@ In `tratar`, replace the step 6 block
 
 ```python
     if pendente.pop(chat, None):
-        enviar(chat, "Ainda não executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
+        enviar(chat, "Ainda nêo executo nada: o \"sim\" entra na etapa 7. Pedido descartado.")
         return
 ```
 
@@ -698,8 +698,8 @@ with:
         return
     if p:
         pendente.pop(chat)
-        palavras = re.sub(r"[^\wáéíóúãõç ]", "", texto.lower()).split()
-        if palavras and palavras[0] in ("não", "nao", "n", "cancela", "cancelar", "no"):
+        palavras = re.sub(r"[^\wáéíóúêõç ]", "", texto.lower()).split()
+        if palavras and palavras[0] in ("nêo", "nao", "n", "cancela", "cancelar", "no"):
             enviar(chat, "Cancelado. Nada foi mudado.")
             return
 ```
@@ -709,7 +709,7 @@ with:
 ```bash
 TELEGRAM_BOT_TOKEN=x python3 -c "
 import bot
-for t in ['sim', 'sim, pode apagar', 'pode', 'pode listar antes?', 'faz um backup primeiro', 'sim, mas antes faz backup', 'sim, não apaga', 'não']:
+for t in ['sim', 'sim, pode apagar', 'pode', 'pode listar antes?', 'faz um backup primeiro', 'sim, mas antes faz backup', 'sim, nêo apaga', 'nêo']:
     print(repr(t), bot.eh_sim(t))
 "
 ```
@@ -720,14 +720,14 @@ Expected: `True` for the first three, `False` for the last five.
 
 ```bash
 python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
-python3 ferramentas/telegram_falso.py fala --de 111 "não"
+python3 ferramentas/telegram_falso.py fala --de 111 "nêo"
 ls area/logs | wc -l
 python3 ferramentas/telegram_falso.py fala --de 111 "apaga a pasta logs"
 python3 ferramentas/telegram_falso.py fala --de 111 "sim"
 ls area
 ```
 
-Expected: `Confirma? (sim/não)` → `Cancelado. Nada foi mudado.` → `3` → `Confirma? (sim/não)` → `Feito:` and `rmdir logs → ok` (one `rm` per file and `rmdir` at the end) → `ls area` without `logs` (empty: the logs folder is gone).
+Expected: `Confirma? (sim/nêo)` → `Cancelado. Nada foi mudado.` → `3` → `Confirma? (sim/nêo)` → `Feito:` and `rmdir logs → ok` (one `rm` per file and `rmdir` at the end) → `ls area` without `logs` (empty: the logs folder is gone).
 
 ---
 
@@ -789,7 +789,7 @@ Expected output (the text and timestamps vary; this is real output):
 {"ev": "recusado", "de": 222, "nome": "Teste", "t": "2026-11-20T02:44:38"}
 {"ev": "pedido", "de": 111, "texto": "apaga a pasta logs", "t": "2026-11-20T02:44:39"}
 {"ev": "proposta", "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs"}, "t": "2026-11-20T02:44:45"}
-{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Não tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
+{"ev": "resposta", "texto": "A pasta logs tem 3 arquivos (app-1.log, app-2.log, app-3.log), uns 4 KB cada. Nêo tem subpastas. Apagar remove tudo isso.", "t": "2026-11-20T02:44:45"}
 {"ev": "aprovado", "de": 111, "acao": {"descricao": "Apagar os 3 arquivos de log e depois a pasta logs", "passos": "rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs"}, "t": "2026-11-20T02:44:47"}
 {"ev": "feito", "resultado": "rm logs/app-1.log → ok\nrm logs/app-2.log → ok\nrm logs/app-3.log → ok\nrmdir logs → ok", "t": "2026-11-20T02:44:47"}
 ```
@@ -867,7 +867,7 @@ Expected output: `active` and a line like `no ar · donos=1 · área=/home/<you>
 mkdir -p area/logs && for i in 1 2 3; do seq 1000 > area/logs/app-$i.log; done
 ```
 
-Then send your bot: `quanto espaço livre tem no disco?` ("how much free disk space is there?") → a reply with your disk numbers. `apaga a pasta logs` ("delete the logs folder") → "Vou fazer: …", `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` and `Confirma? (sim/não)`. Reply `não` → "Cancelado. Nada foi mudado." ("Cancelled. Nothing was changed."). That's it: the bot is running, only you talk to it, the AI only reads, and nothing changes without your "yes".
+Then send your bot: `quanto espaço livre tem no disco?` ("how much free disk space is there?") → a reply with your disk numbers. `apaga a pasta logs` ("delete the logs folder") → "Vou fazer: …", `Comandos: rm logs/app-1.log && rm logs/app-2.log && rm logs/app-3.log && rmdir logs` and `Confirma? (sim/nêo)`. Reply `nêo` → "Cancelado. Nada foi mudado." ("Cancelled. Nothing was changed."). That's it: the bot is running, only you talk to it, the AI only reads, and nothing changes without your "yes".
 
 Run only one instance: don’t run `python3 bot.py` by hand while the service is running (they would compete for messages). To stop it: `systemctl --user stop telegram-vps-remoto`.
 
