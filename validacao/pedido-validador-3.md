@@ -1,4 +1,4 @@
-Você é uma pessoa que nunca viu este projeto e quer montar o bot seguindo SÓ a página de guia abaixo (é o texto da página https://inematds.github.io/telegram-vps-passo-a-passo/guia/, com os blocos "Código desta etapa" abertos). Use os comandos e os códigos da página; se a página mandar baixar algo com `curl`, baixe (a internet funciona). Nêo procure o código pronto em nenhuma pasta desta máquina: é proibido ler qualquer pasta fora da sua pasta atual, exceto rodar `claude`, `python3`, `curl` e comandos comuns.
+Você é uma pessoa que nunca viu este projeto e quer montar o bot seguindo SÓ a página de guia abaixo (é o texto da página https://linnoff88-dev.github.io/arckhe-/guia/, com os blocos "Código desta etapa" abertos). Use os comandos e os códigos da página; se a página mandar baixar algo com `curl`, baixe (a internet funciona). Nêo procure o código pronto em nenhuma pasta desta máquina: é proibido ler qualquer pasta fora da sua pasta atual, exceto rodar `claude`, `python3`, `curl` e comandos comuns.
 
 Adaptações deste teste (a máquina nêo é uma VPS de verdade):
 - Sua pasta atual faz o papel de `~/kits/telegram-vps-remoto`. Trabalhe só nela. Nunca use `~/kits`.

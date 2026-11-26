@@ -2,7 +2,7 @@
 
 Passo a passo (9 etapas) para alguém montar na própria VPS o bot de Telegram → Claude Code pela assinatura, com as travas no código. Base: o kit `~/projetos/telegram-vps-remoto` (bot.py + testes + systemd).
 
-- Repo: `inematds/telegram-vps-passo-a-passo`, autor `inematds <inematds@gmail.com>`. Guia em `guia/` (PT) + `guia/en/` + `guia/es/`, Pages via Actions.
+- Repo: `linnoff88-dev/telegram-vps-passo-a-passo`, autor `linnoff88-dev <linnoff88-dev@gmail.com>`. Guia em `guia/` (PT) + `guia/en/` + `guia/es/`, Pages via Actions.
 - `PASSO-A-PASSO.md` é a fonte do texto; `etapas/NN-*/bot.py` é o gabarito de cada etapa; a etapa 9 tem de bater com o kit (`diff` vazio depois que o kit receber `validacao/patch-kit-setting-sources.diff`) e passar em `testar_travas.py`.
 - Mudou uma etapa: rode o bot daquela etapa contra `ferramentas/telegram_falso.py` e confira a "saída esperada" do texto. Mudou o texto: rode de novo a validaçêo por agente novo (`validacao/`).
 - Nunca: token de bot em repo/log; usar o bot de produçêo para testes; API de modelo.

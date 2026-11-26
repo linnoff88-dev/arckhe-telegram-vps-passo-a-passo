@@ -1,6 +1,6 @@
 # Remote Telegram VPS — step by step
 
-[![Your bot on your VPS — step by step](guia/assets/banner-en.jpg)](https://inematds.github.io/telegram-vps-passo-a-passo/guia/en/)
+[![Your bot on your VPS — step by step](guia/assets/banner-en.jpg)](https://linnoff88-dev.github.io/arckhe-/guia/en/)
 
 **🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**
 
@@ -10,7 +10,7 @@ A step-by-step guide to building, with your own hands and on your own VPS, a Tel
 
 ## 📖 Guide
 
-Complete guide (landing page + step-by-step instructions): **https://inematds.github.io/telegram-vps-passo-a-passo/guia/en/**
+Complete guide (landing page + step-by-step instructions): **https://linnoff88-dev.github.io/arckhe-/guia/en/**
 
 - The complete text, with all the code for each step: [`PASSO-A-PASSO.en.md`](PASSO-A-PASSO.en.md)
 - The finished `bot.py` for each step (reference solutions): [`etapas/`](etapas/)
@@ -21,7 +21,7 @@ Complete guide (landing page + step-by-step instructions): **https://inematds.gi
 Open Claude Code (or Codex) on your VPS and paste:
 
 ```
-Read https://github.com/inematds/telegram-vps-passo-a-passo (the PASSO-A-PASSO.en.md). Let's build the bot
+Read https://github.com/linnoff88-dev/telegram-vps-passo-a-passo (the PASSO-A-PASSO.en.md). Let's build the bot
 together, one step at a time, in the ~/kits/telegram-vps-remoto folder. At each step: explain in simple
 language what changes, run the test with the fake Telegram server, and show me the output compared with
 the expected output. Don't connect anything to systemd or use my real token until I say yes.
@@ -79,4 +79,4 @@ See [CLAUDE.md](CLAUDE.md).
 
 ---
 
-Made at [INEMA.CLUB](https://inema.club) — free and open content.
+Made at [ARCKHÉ AI](https://ARCKHÉ AI) — free and open content.

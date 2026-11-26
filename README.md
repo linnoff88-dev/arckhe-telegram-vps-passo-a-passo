@@ -6,7 +6,7 @@
 </div>
 
 
-[![Bot na sua VPS ê¢â¬â passo a passo](guia/assets/banner.jpg)](https://inematds.github.io/telegram-vps-passo-a-passo/guia/)
+[![Bot na sua VPS ê¢â¬â passo a passo](guia/assets/banner.jpg)](https://linnoff88-dev.github.io/arckhe-/guia/)
 
 **ê°Å¸â¡Â§ê°Å¸â¡Â· [PortuguêÂªs](README.md) êÂ· ê°Å¸â¡Âºê°Å¸â¡Â¸ [English](README.en.md) êÂ· ê°Å¸â¡Âªê°Å¸â¡Â¸ [EspaêÂ±ol](README.es.md)**
 
@@ -16,7 +16,7 @@ Um passo a passo para vocêÂª montar, com as prêÂ³prias mêÂ£os e n
 
 ## ê°Å¸ââ Guia
 
-Guia completo (landing + passo a passo): **https://inematds.github.io/telegram-vps-passo-a-passo/guia/**
+Guia completo (landing + passo a passo): **https://linnoff88-dev.github.io/arckhe-/guia/**
 
 - O texto inteiro, com todo o cêÂ³digo de cada etapa: [`PASSO-A-PASSO.md`](PASSO-A-PASSO.md) (tambêÂ©m em [inglêÂªs](PASSO-A-PASSO.en.md) e [espanhol](PASSO-A-PASSO.es.md))
 - O `bot.py` pronto de cada etapa (gabarito): [`etapas/`](etapas/)
@@ -27,7 +27,7 @@ Guia completo (landing + passo a passo): **https://inematds.github.io/telegram-v
 Abra o Claude Code (ou o Codex) na sua VPS e cole:
 
 ```
-Leia https://github.com/inematds/telegram-vps-passo-a-passo (o PASSO-A-PASSO.md). Vamos montar o bot
+Leia https://github.com/linnoff88-dev/telegram-vps-passo-a-passo (o PASSO-A-PASSO.md). Vamos montar o bot
 juntos, etapa por etapa, na pasta ~/kits/telegram-vps-remoto. Em cada etapa: me explique em linguagem
 simples o que muda, rode o teste com o Telegram falso e me mostre a saêÂ­da comparada com a esperada.
 NêÂ£o ligue nada no systemd nem use meu token real antes de eu dizer sim.
@@ -85,7 +85,7 @@ Ver [CLAUDE.md](CLAUDE.md).
 
 ---
 
-Feito no [INEMA.CLUB](https://inema.club) ê¢â¬â conteêÂºdo aberto e gratuito.
+Feito no [ARCKHÉ AI](https://ARCKHÉ AI) ê¢â¬â conteêÂºdo aberto e gratuito.
 
 ---
 

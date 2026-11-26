@@ -7,8 +7,8 @@ uso: python3 ferramentas/injetar_codigo.py   (na raiz do repo; pode rodar de nov
 import html, os, re
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW = "https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/{}/bot.py"
-BLOB = "https://github.com/inematds/telegram-vps-passo-a-passo/blob/main/etapas/{}/bot.py"
+RAW = "https://raw.githubusercontent.com/linnoff88-dev/telegram-vps-passo-a-passo/main/etapas/{}/bot.py"
+BLOB = "https://github.com/linnoff88-dev/telegram-vps-passo-a-passo/blob/main/etapas/{}/bot.py"
 TXT = {
     "index.html": ("<strong>Primeiro, salve o código desta etapa como <code>bot.py</code></strong> na pasta do bot (ele substitui o anterior). "
                    "Jeito rápido: baixe com o <code>curl</code> abaixo. Ou escreva você mesmo: <code>nano bot.py</code>, apague o que houver, "

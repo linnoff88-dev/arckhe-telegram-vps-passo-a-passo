@@ -13,7 +13,7 @@ You’ll build a Telegram bot from scratch on your VPS. It receives your request
 There are 9 steps. Each ends with a test and the **expected output**. You can test everything without a real bot, using the **fake Telegram server** (`ferramentas/telegram_falso.py`), and connect the real bot only at the end.
 
 The complete file for each step (the answer key) is in `etapas/NN-nome/bot.py` in the repository  
-`https://github.com/inematds/telegram-vps-passo-a-passo`.
+`https://github.com/linnoff88-dev/telegram-vps-passo-a-passo`.
 
 > Tested on Ubuntu 24.04. Only the Python 3 standard library. No `pip install`. No paid API: Claude Code runs through your subscription.
 
@@ -69,7 +69,7 @@ Create the bot folder and download the fake Telegram server:
 ```bash
 mkdir -p ~/kits/telegram-vps-remoto/ferramentas ~/kits/telegram-vps-remoto/testes
 cd ~/kits/telegram-vps-remoto
-curl -fsSLo ferramentas/telegram_falso.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/ferramentas/telegram_falso.py
+curl -fsSLo ferramentas/telegram_falso.py https://raw.githubusercontent.com/linnoff88-dev/telegram-vps-passo-a-passo/main/ferramentas/telegram_falso.py
 python3 ferramentas/telegram_falso.py --help | head -3
 ```
 
@@ -96,7 +96,7 @@ EOF
 chmod 600 .env
 ```
 
-Create this step’s `bot.py` (it only introduces itself to Telegram). Quick way: download it with `curl -fsSLo bot.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/02-token-e-env/bot.py`. Or write it yourself: `nano bot.py`, paste the code below, save with Ctrl+O and Enter, and exit with Ctrl+X. (For the next steps, each finished file is in `etapas/NN-nome/bot.py`, and the guide page has the `curl` for each step.)
+Create this step’s `bot.py` (it only introduces itself to Telegram). Quick way: download it with `curl -fsSLo bot.py https://raw.githubusercontent.com/linnoff88-dev/telegram-vps-passo-a-passo/main/etapas/02-token-e-env/bot.py`. Or write it yourself: `nano bot.py`, paste the code below, save with Ctrl+O and Enter, and exit with Ctrl+X. (For the next steps, each finished file is in `etapas/NN-nome/bot.py`, and the guide page has the `curl` for each step.)
 
 ```python
 #!/usr/bin/env python3
@@ -806,7 +806,7 @@ Each line is a JSON object (text with `"field": value`); a `.jsonl` file is just
 Download the safeguard test and run it (uses 8 short Claude Code calls; takes from half a minute to about 4 minutes):
 
 ```bash
-curl -fsSLo testes/testar_travas.py https://raw.githubusercontent.com/inematds/telegram-vps-passo-a-passo/main/etapas/09-systemd-e-testes/testes/testar_travas.py
+curl -fsSLo testes/testar_travas.py https://raw.githubusercontent.com/linnoff88-dev/telegram-vps-passo-a-passo/main/etapas/09-systemd-e-testes/testes/testar_travas.py
 python3 testes/testar_travas.py
 ```
 
